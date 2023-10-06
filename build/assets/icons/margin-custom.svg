@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="Group_381" data-name="Group 381">
+    <path id="Path_368" data-name="Path 368" d="M0,0H24V24H0Z" fill="none"/>
+    <path id="Path_369" data-name="Path 369" d="M8,8h8v8H8Z" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_370" data-name="Path 370" d="M4,4v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_371" data-name="Path 371" d="M8,4v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_372" data-name="Path 372" d="M12,4v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_373" data-name="Path 373" d="M16,4v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_374" data-name="Path 374" d="M20,4v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_375" data-name="Path 375" d="M4,20v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_376" data-name="Path 376" d="M8,20v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_377" data-name="Path 377" d="M12,20v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_378" data-name="Path 378" d="M16,20v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_379" data-name="Path 379" d="M20,20v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_380" data-name="Path 380" d="M20,16v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_381" data-name="Path 381" d="M20,12v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_382" data-name="Path 382" d="M20,8v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_383" data-name="Path 383" d="M4,16v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_384" data-name="Path 384" d="M4,12v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_385" data-name="Path 385" d="M4,8v.01" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+  </g>
+  <g id="Group_703" data-name="Group 703" transform="translate(-1674 -210)">
+    <line id="Line_26" data-name="Line 26" y2="15" transform="translate(1693.5 214) rotate(90)" fill="none" stroke="#fff" stroke-width="1"/>
+    <line id="Line_32" data-name="Line 32" y2="15" transform="translate(1693.5 218) rotate(90)" fill="none" stroke="#fff" stroke-width="1"/>
+    <line id="Line_27" data-name="Line 27" y2="15" transform="translate(1693.5 230) rotate(90)" fill="none" stroke="#fff" stroke-width="1"/>
+    <line id="Line_33" data-name="Line 33" y2="15" transform="translate(1693.5 226) rotate(90)" fill="none" stroke="#fff" stroke-width="1"/>
+    <line id="Line_28" data-name="Line 28" y2="15" transform="translate(1678 214.5)" fill="none" stroke="#fff" stroke-width="1"/>
+    <line id="Line_29" data-name="Line 29" y2="15" transform="translate(1682 214.5)" fill="none" stroke="#fff" stroke-width="1"/>
+    <line id="Line_30" data-name="Line 30" y2="15" transform="translate(1690 214.5)" fill="none" stroke="#fff" stroke-width="1"/>
+    <line id="Line_31" data-name="Line 31" y2="15" transform="translate(1694 214.5)" fill="none" stroke="#fff" stroke-width="1"/>
+  </g>
+</svg>

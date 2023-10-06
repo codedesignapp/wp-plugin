@@ -1,0 +1,15 @@
+User-agent: *
+Disallow: /login/
+Disallow: /register/
+Disallow: /admin/
+Disallow: /builder/
+Disallow: /401/
+Disallow: /404/
+Disallow: /new/
+Disallow: /draft/
+Disallow: /settings/
+Disallow: /dashboard/
+Disallow: /notifications/
+Disallow: /settings/
+Disallow: /version-history/
+Disallow: /page-preview/

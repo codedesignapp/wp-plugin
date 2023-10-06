@@ -1,0 +1,43 @@
+#heroSection {
+  overflow-y: scroll;
+  height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
+  background: #fff;
+}
+
+#heroSection::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 10px;
+}
+
+#heroSection::-webkit-scrollbar:horizontal {
+  height: 10px;
+}
+
+#heroSection::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #545454;
+}
+
+#heroSection::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #afafaf;
+  box-shadow: 0 0 1px #afafaf;
+}
+
+#heroSection::-webkit-resizer,
+#heroSection::-webkit-scrollbar-corner {
+  background-color: gray;
+}
+
+.iframe-resizable-handle {
+  position: fixed;
+  top: 50%;
+  right: 0px;
+  cursor: pointer;
+}
+
+.iframe-resizable-handle img {
+  pointer-events: none;
+  user-select: none;
+}

@@ -1,0 +1,15 @@
+<svg id="Group_1390" data-name="Group 1390"
+    xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+    <g id="Rectangle_462" data-name="Rectangle 462" fill="none" stroke="rgba(231,234,240,0.16)" stroke-width="1" opacity="0">
+        <rect width="50" height="50" stroke="none"/>
+        <rect x="0.5" y="0.5" width="49" height="49" fill="none"/>
+    </g>
+    <g id="Group_1867" data-name="Group 1867" transform="translate(13 13)">
+        <path id="Path_991" data-name="Path 991" d="M0,0H24V24H0Z" fill="none"/>
+        <line id="Line_330" data-name="Line 330" x2="3" transform="translate(4 20)" fill="none" stroke="#e7eaf0" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Line_331" data-name="Line 331" x2="7" transform="translate(14 20)" fill="none" stroke="#e7eaf0" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Line_332" data-name="Line 332" x2="6.9" transform="translate(6.9 15)" fill="none" stroke="#e7eaf0" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Line_333" data-name="Line 333" x2="5.8" y2="13.7" transform="translate(10.2 6.3)" fill="none" stroke="#e7eaf0" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Path_992" data-name="Path 992" d="M5,20,11,4h2l7,16" fill="none" stroke="#e7eaf0" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    </g>
+</svg>

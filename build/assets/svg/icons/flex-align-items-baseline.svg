@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25">
+  <g id="Group_934" data-name="Group 934" transform="translate(1732 402.413) rotate(180)">
+    <rect id="Rectangle_324" data-name="Rectangle 324" width="25" height="25" rx="1" transform="translate(1707 377.413)" fill="none"/>
+    <rect id="Rectangle_325" data-name="Rectangle 325" width="5" height="5" rx="1" transform="translate(1711 388.822)" fill="#fff"/>
+    <rect id="Rectangle_327" data-name="Rectangle 327" width="4" height="7" rx="1" transform="translate(1723 386.822)" fill="#fff"/>
+    <rect id="Rectangle_326" data-name="Rectangle 326" width="5" height="13" rx="1" transform="translate(1717 383.822)" fill="#fff"/>
+    <line id="Line_179" data-name="Line 179" x2="25" transform="translate(1707 390.322)" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    <path id="Rectangle_328" data-name="Rectangle 328" d="M0,0H3A0,0,0,0,1,3,0V4A1,1,0,0,1,2,5H1A1,1,0,0,1,0,4V0A0,0,0,0,1,0,0Z" transform="translate(1718 390.822)" fill="#5d5d5d"/>
+    <path id="Rectangle_329" data-name="Rectangle 329" d="M0,0H2A0,0,0,0,1,2,0V1A1,1,0,0,1,1,2H1A1,1,0,0,1,0,1V0A0,0,0,0,1,0,0Z" transform="translate(1724 390.822)" fill="#5d5d5d"/>
+    <path id="Rectangle_330" data-name="Rectangle 330" d="M0,0H3A0,0,0,0,1,3,0V1A1,1,0,0,1,2,2H1A1,1,0,0,1,0,1V0A0,0,0,0,1,0,0Z" transform="translate(1712 390.822)" fill="#5d5d5d"/>
+  </g>
+</svg>

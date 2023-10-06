@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="200px" height="140px" viewBox="0 0 200 140" enable-background="new 0 0 200 140" xml:space="preserve">
+<g>
+	<rect fill="#E0E0E0" width="200.001" height="140"/>
+	<g opacity="0">
+		<polyline fill="none" stroke="#DBDBDB" stroke-width="2.002" stroke-miterlimit="10" points="200.001,136.496 200.001,140 
+			196.497,140 		"/>
+		
+			<line fill="none" stroke="#DBDBDB" stroke-width="2.002" stroke-miterlimit="10" stroke-dasharray="7.1479,7.1479" x1="189.349" y1="140" x2="7.078" y2="140"/>
+		<polyline fill="none" stroke="#DBDBDB" stroke-width="2.002" stroke-miterlimit="10" points="3.503,140 0,140 0,136.496 		"/>
+		
+			<line fill="none" stroke="#DBDBDB" stroke-width="2.002" stroke-miterlimit="10" stroke-dasharray="6.9996,6.9996" x1="0" y1="129.497" x2="0" y2="7.003"/>
+		<polyline fill="none" stroke="#DBDBDB" stroke-width="2.002" stroke-miterlimit="10" points="0,3.503 0,0 3.503,0 		"/>
+		
+			<line fill="none" stroke="#DBDBDB" stroke-width="2.002" stroke-miterlimit="10" stroke-dasharray="7.1479,7.1479" x1="10.651" y1="0" x2="192.923" y2="0"/>
+		<polyline fill="none" stroke="#DBDBDB" stroke-width="2.002" stroke-miterlimit="10" points="196.497,0 200.001,0 200.001,3.503 
+					"/>
+		
+			<line fill="none" stroke="#DBDBDB" stroke-width="2.002" stroke-miterlimit="10" stroke-dasharray="6.9996,6.9996" x1="200.001" y1="10.503" x2="200.001" y2="132.997"/>
+	</g>
+</g>
+<path id="video-camera-icon" fill="#C2C2C2" d="M113.087,80.538c0,3.859-3.137,6.99-6.996,6.99H70.449
+	c-3.866,0-6.994-3.131-6.994-6.99V57.998c0-3.859,3.128-6.987,6.994-6.987h35.642c3.859,0,6.996,3.128,6.996,6.987V80.538z
+	 M139.462,51.01L118.62,63.647v11.246l20.842,12.636V51.01z"/>
+</svg>
