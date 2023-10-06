@@ -15,7 +15,30 @@ class MyNoCodeConnector {
         add_action('wp_ajax_mnc_handle_sync', [$this, 'mnc_handle_sync']);
         add_action('wp_ajax_nopriv_mnc_handle_sync', [$this, 'mnc_handle_sync']);
         add_filter('the_content', [$this, 'replace_placeholder_with_react_root']);
+        add_filter('theme_page_templates', [$this,'mnc_add_page_template_to_dropdown']);
+        add_filter('template_include', [$this,'mnc_redirect_to_custom_template'],9999);
+        add_action('wp_enqueue_scripts', [$this,'mnc_enqueue_styles']);
 
+    }
+
+
+public function mnc_redirect_to_custom_template($template) {
+    if (is_singular('page')) {
+        $assigned_template = get_post_meta(get_the_ID(), '_wp_page_template', true);
+       error_log(basename($assigned_template));
+        if ('full-width-template.php' == basename($assigned_template)) {
+            return plugin_dir_path(__FILE__) . 'full-width-template.php';
+        }
+    }
+    return $template;
+}
+
+  
+    public function mnc_add_page_template_to_dropdown($templates) {
+                error_log("test2");
+
+    $templates[plugin_dir_path(__FILE__) . 'full-width-template.php'] = 'Full Width Template';
+    return $templates;
     }
 
     public function add_settings_page() {
@@ -76,7 +99,7 @@ class MyNoCodeConnector {
 
     public function validate_api_key($apiKey) {
         // Append the API key as a query parameter to the validation URL
-        $url = 'http://20.40.53.151:3000/wp/validate-key?api_key=' . urlencode($apiKey);
+        $url = 'https://production.api.codedesign.app/wp/validate-key?api_key=' . urlencode($apiKey);
 
         // Send a GET request to the validation URL
         $response = wp_remote_get($url);
@@ -98,6 +121,13 @@ class MyNoCodeConnector {
             // Enqueue the React app's main.js and vendors~main.js files
             wp_enqueue_script('mnc-react-vendors', plugin_dir_url(__FILE__) . 'build/static/js/vendors~main.chunk.js', [], null, true);
             wp_enqueue_script('mnc-react-app', plugin_dir_url(__FILE__) . 'build/static/js/main.js', ['mnc-react-vendors'], null, true);
+            wp_enqueue_script('mnc-react-2-chunk', plugin_dir_url(__FILE__) . 'build/static/js/2.chunk.js', ['mnc-react-app','mnc-react-vendors'], null, true);
+
+            // Get the stored data
+            $fetchedData = get_option('cc_project_data', '{}');
+
+            // Localize the script with the data
+            wp_localize_script('mnc-react-app', 'ccData', ['fetchedData' => json_decode($fetchedData, true)]);
         }
     }
 
@@ -108,6 +138,8 @@ class MyNoCodeConnector {
 }
     public function mnc_handle_sync() {
 
+        $fetchedData = isset($_POST['fetchedData']) ? stripslashes($_POST['fetchedData']) : '{test:"new"}';
+        update_option('cc_project_data', $fetchedData);
         $pageNames = isset($_POST['pageNames']) ? json_decode(stripslashes($_POST['pageNames']), true) : [];
 
         foreach ($pageNames as $pageName) {
@@ -125,12 +157,13 @@ class MyNoCodeConnector {
                 ]);
             } else {
                 // Create a new post/page
-                wp_insert_post([
-                    'post_title' => $pageName,
-                    'post_name' => $pageName,
-                    'post_content' => $placeholderContent,
-                    'post_status' => 'publish',
-                    'post_type' => 'page' // or 'post' depending on your needs
+              wp_insert_post([
+                'post_title'    => $pageName,
+                'post_name'     => $pageName,
+                'post_content'  => $placeholderContent,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'page_template' => plugin_dir_path(__FILE__) . 'full-width-template.php'
                 ]);
             }
         }
@@ -142,6 +175,14 @@ class MyNoCodeConnector {
     public function replace_placeholder_with_react_root($content) {
         return str_replace('[your_placeholder_string]', '<div id="root"></div>', $content);
     }
+
+    public function mnc_enqueue_styles() {
+    wp_enqueue_style('mnc-custom-style', plugin_dir_url(__FILE__) . 'css/custom.css');
+    wp_enqueue_style('mnc-req-styles', plugin_dir_url(__FILE__) . 'build/assets/css/reqStyles.css');
+    wp_enqueue_style('mnc-reset-styles', plugin_dir_url(__FILE__) . 'build/assets/css/reset.css');
+
+
+}
 }
 
 // Initialize the plugin

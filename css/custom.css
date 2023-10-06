@@ -1,0 +1,6 @@
+/* Hide header and footer for pages using the custom template */
+body.page-template-full-width-template #header,
+body.page-template-full-width-template #footer,
+body.page-template-full-width-template hr {
+  display: none !important;
+}
