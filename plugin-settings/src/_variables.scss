@@ -1,0 +1,77 @@
+/////////////////////////////////////////////
+// Colors
+/////////////////////////////////////////////
+
+$neutral0: #ffffff;
+$neutral25: #fbfbfb;
+$neutral50: #f6f6f6;
+$neutral100: #eeeeee;
+$neutral200: #e2e2e2;
+$neutral300: #cbcbcb;
+$neutral400: #afafaf;
+$neutral500: #757575;
+$neutral600: #545454;
+$neutral650: #444444; //active tab case
+$neutral700: #333333; //hover tab case
+$neutral750: #292929; //this will be tab-content/panel's background
+$neutral800: #1f1f1f;
+$neutral850: #1a1a1a;
+$neutral900: #141414;
+$neutral1000: #000000;
+
+$primary0: #ffffff;
+$primary25: #f8f7fc;
+$primary100: #e0dff2;
+$primary200: #c2bee6;
+$primary300: #a39ed9;
+$primary400: #857dcd;
+$primary500: #665dc0;
+$primary600: #524a9a;
+$primary700: #3d3873;
+$primary800: #29254d;
+// $primary900: #141414;
+
+// $blue0: #ffffff;
+// $blue100: #eeeeee;
+// $blue200: #e2e2e2;
+// $blue300: #cbcbcb;
+$blue400: #188dfa;
+$blue500: #057ae5;
+// $blue600: #545454;
+$blue700: #034e94;
+// $blue800: #1f1f1f;
+// $blue900: #141414;
+
+// $success0: #ffffff;
+$success100: #daf1e8;
+// $success200: #e2e2e2;
+// $success300: #cbcbcb;
+// $success400: #afafaf;
+$success500: #52bd94;
+$success600: #40a880;
+// $success700: #333333;
+// $success800: #1f1f1f;
+// $success900: #141414;
+
+// $danger0: #ffffff;
+// $danger100: #eeeeee;
+$danger200: #f09ca0;
+// $danger300: #cbcbcb;
+// $danger400: #afafaf;
+$danger500: #d32029;
+$danger600: #b71b23;
+$danger700: #89141a;
+$danger800: #5b0e12;
+// $danger900: #141414;
+
+$warning400: #ffbc3f;
+$warning500: #ffb020;
+$warning600: #f59f00;
+
+/////////////////////////////////////////////
+// Builder
+/////////////////////////////////////////////
+$builder-sidebar-width: 304px;
+$builder-header-height: 36px;
+$builder-footer-height: 36px;
+$app-data-header-height: 36px;

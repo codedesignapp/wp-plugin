@@ -1,10 +1,7 @@
 function syncFunction() {
   // Step 1: Use AJAX to call the backend and fetch the page data
   const apiKey = document.querySelector('input[name="mnc_api_key"]').value;
-  fetch(
-    "https://production.api.codedesign.app/guest/web-builder/project?key=" +
-      apiKey
-  )
+  fetch("http://20.40.53.151:3000/guest/web-builder/project?key=" + apiKey)
     .then((response) => response.json())
     .then((response) => {
       // We have to parse the data

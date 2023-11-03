@@ -1,0 +1,17 @@
+:root {
+  --body-3-semi-bold-font-family: "NunitoSans-SemiBold", Helvetica;
+  --body-3-semi-bold-font-weight: 600;
+  --body-3-semi-bold-font-size: 12px;
+  --body-3-semi-bold-letter-spacing: 0.36px;
+  --body-3-semi-bold-line-height: normal;
+  --body-3-semi-bold-font-style: normal;
+  --colors-neutral-neutral0: rgba(255, 255, 255, 1);
+  --colors-neutral-neutral500: rgba(117, 117, 117, 1);
+  --colors-neutral-neutral100: rgba(238, 238, 238, 1);
+  --colors-danger-danger500: rgba(211, 32, 41, 1);
+  --colors-neutral-neutral50: rgba(246, 246, 246, 1);
+  --colors-primary-primary500: rgba(102, 93, 192, 1);
+  --colors-neutral-neutral600: rgba(84, 84, 84, 1);
+  --colors-neutral-neutral900: rgba(20, 20, 20, 1);
+  --colors-neutral-neutral200: rgba(226, 226, 226, 1);
+}
