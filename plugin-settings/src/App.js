@@ -36,6 +36,7 @@ function App() {
           // Update your state or UI here, if necessary
         } else {
           console.log("Error disconnecting");
+          setHasApiKey(false);
         }
         setShowSettingsLoader(false);
       })

@@ -6,10 +6,13 @@ Version: 1.0
 Author: CodeDesign.ai
 */
 require_once plugin_dir_path(__FILE__) . 'settings-page.php';
+require_once plugin_dir_path(__FILE__) . 'ConfigManager.php';
 
 
 class MyNoCodeConnector
 {
+
+    private $base_hostname;
 
     public function __construct()
     {
@@ -18,7 +21,7 @@ class MyNoCodeConnector
         // Other plugin actions and filters can be added here
         add_action('admin_menu', [$this, 'add_settings_page']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_react_app']);
-        add_action('admin_enqueue_scripts', [$this, 'mnc_enqueue_admin_scripts']);
+        // add_action('admin_enqueue_scripts', [$this, 'mnc_enqueue_admin_scripts']);
         add_action('wp_ajax_mnc_handle_sync', [$this, 'mnc_handle_sync']);
         add_action('wp_ajax_nopriv_mnc_handle_sync', [$this, 'mnc_handle_sync']);
         add_filter('the_content', [$this, 'replace_placeholder_with_react_root']);
@@ -35,11 +38,13 @@ class MyNoCodeConnector
 
         //initiate rest api (webhook)
         add_action('rest_api_init', [$this, 'mnc_register_webhook_endpoint']);
+
+        $this->base_hostname = ConfigManager::get('base_hostname');
     }
 
     public function mnc_register_webhook_endpoint()
     {
-        register_rest_route('mnc/v1', '/webhook', [
+        register_rest_route('mnc/v1', '/sync', [
             'methods' => 'POST',
             'callback' => [$this, 'handle_webhook'],
             'permission_callback' => '__return_true', // Note: For security, you might want to secure this!
@@ -146,13 +151,6 @@ class MyNoCodeConnector
         $mnc_admin_scripts->render_settings_page();
     }
 
-    public function mnc_enqueue_admin_scripts()
-    {
-        wp_enqueue_script('cc-helpers-js', plugin_dir_url(__FILE__) . 'helpers.js', ['jquery'], '1.0.0', true);
-
-        // Pass ajax_url to script.js
-        wp_localize_script('cc-helpers-js', 'mnc_ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
-    }
 
     /* Validating API Key */
 
@@ -172,8 +170,9 @@ class MyNoCodeConnector
 
     public function validate_api_key($apiKey)
     {
-        // Append the API key as a query parameter to the validation URL
-        $endpoint = 'http://20.40.53.151:3000/wp/validate-key';
+        $pathname = '/wp/validate-key';
+        $endpoint = $this->base_hostname . $pathname;
+        error_log($endpoint . " " . "hellow");
 
         // Extract the scheme (http or https) and the hostname from site_url
         $parsedUrl = parse_url(site_url());
@@ -255,7 +254,8 @@ class MyNoCodeConnector
 
     public function notify_backend_of_disconnection($apiKey)
     {
-        $endpoint = "http://20.40.53.151:3000/wp/disconnect-key"; // Replace with your backend endpoint
+        $pathname = '/wp/disconnect-key';
+        $endpoint = $this->base_hostname . $pathname;
 
         $response = wp_remote_post($endpoint, [
             'method' => 'POST',
@@ -377,10 +377,8 @@ class MyNoCodeConnector
     private function sync_function($apiKey)
     {
 
-
-        // Include the scheme and hostname in your endpoint URL
-        $endpoint = "http://20.40.53.151:3000/guest/web-builder/project?wordpress=true&bypassCache=true&returnJSON=true&key={$apiKey}";
-
+        $pathname = "/guest/web-builder/project?wordpress=true&bypassCache=true&returnJSON=true&key={$apiKey}";
+        $endpoint = $this->base_hostname . $pathname;
 
         $response = wp_remote_get($endpoint);
 

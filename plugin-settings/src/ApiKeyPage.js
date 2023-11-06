@@ -65,9 +65,12 @@ const ApiKeyPage = (props) => {
           </div>
           <div className="cd-error-message">{errorMessage}</div>
           <div className="info-text">
-            This version of the plugin is not compatible with CodeDesign pages.
-            Please contact <span className="span">CodeDeign Chat Support</span>{" "}
-            for any help with the plugin.
+            To get the API key, head over to your project's settings, and then
+            Integrations. If you need any help, do not hesitate to get in{" "}
+            <a href="https://codedesign.ai/support" className="span">
+              touch with us
+            </a>
+            .
           </div>
         </div>
       </div>

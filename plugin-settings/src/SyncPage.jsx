@@ -4,16 +4,35 @@ import "./styleguide.css";
 import "./style.scss";
 
 const SyncPage = (props) => {
+  const rawData = window.wpData && window.wpData;
+  const jsonData = JSON.parse(rawData?.projectData);
+
+  const pagesCount = Object.keys(jsonData.blueprint).filter(
+    (item) => !item?.startsWith("linked"),
+  )?.length;
+  const lastPublished = formatPrettyDate(jsonData.timestamps?.updatedAt);
   const { handleDisconnect, showLoader } = props;
   // State to manage the API Key input field
+
+  function formatPrettyDate(dateString) {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    };
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", options);
+  }
 
   return (
     <div className="cd-sync-container">
       <div className="cd-sync-header-container">
-        <div className="cd-sync-header-h1">Synchronizing your Pages..</div>
+        <div className="cd-sync-header-h1">Pages are in Syc!</div>
         <div className="cd-sync-header-p">
-          We're currently synchronizing your Pages across Wordpress and
-          CodeDesign. This may take a few minutes
+          All your CodeDesign.ai pages are now synced to WordPress.
         </div>
       </div>
 
@@ -30,17 +49,16 @@ const SyncPage = (props) => {
       <div className="cd-sync-footer-container">
         <div className="cd-sync-footer-last-sync-and-info">
           <div className="cd-sync-footer-last-sync">
-            Last Sync: 9:71pm 12/10/2023
+            Last Sync: {lastPublished}
           </div>
         </div>
-        <div className="cd-sync-footer-additional-info">
-          12 Pages - 3 Linked Components - 8 Functions
-        </div>
+        <div className="cd-sync-footer-additional-info">{pagesCount} Pages</div>
         <div className="cd-sync-footer-info-text">
           <span>
-            This version of the plugin is not compatible with CodeDesign pages.
-            Please contact <span className="span">CodeDeign Chat Support</span>{" "}
-            for any help with the plugin.
+            To publish a newer version, head over to the project and press the
+            Publish button. Please contact{" "}
+            <span className="span">CodeDeign Support</span> for any help with
+            the plugin.
           </span>
           <span
             className="cd-sync-footer-disconnect"
