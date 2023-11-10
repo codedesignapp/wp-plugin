@@ -83,7 +83,8 @@
     ]
   },
   "devDependencies": {
-    "@prettier/plugin-php": "^0.21.0"
+    "@prettier/plugin-php": "^0.21.0",
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11"
   },
   "jest": {
     "roots": [
