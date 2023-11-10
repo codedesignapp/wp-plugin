@@ -51,13 +51,12 @@ jobs:
           zip -r codedesign-wp-plugin-latest.zip . -x "*.git*"
 
       - name: Create GitHub Release
-        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.tag_version.outputs.new_tag }}
-          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+          tag_name: ${{ env.TAG_VERSION }}
+          release_name: Release ${{ env.TAG_VERSION }}
           draft: false
           prerelease: false
 
