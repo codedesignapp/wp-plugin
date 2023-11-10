@@ -34,7 +34,6 @@ jobs:
           git push
 
       - name: Create a new tag based on commit count
-        id: create_tag
         run: |
           TAG_VERSION=v$(date +%Y%m%d)-$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
           echo "New tag version $TAG_VERSION"
@@ -52,21 +51,13 @@ jobs:
           zip -r codedesign-wp-plugin-latest.zip . -x "*.git*"
 
       - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: create_release
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.TAG_VERSION }}
-          release_name: Release ${{ env.TAG_VERSION }}
+          name: Release ${{ env.TAG_VERSION }}
           draft: false
           prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+          files: codedesign-wp-plugin-latest.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./codedesign-wp-plugin-latest.zip
-          asset_name: codedesign-wp-plugin-latest.zip
-          asset_content_type: application/zip
