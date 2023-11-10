@@ -1,0 +1,52 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main # Set to your default branch
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14" # Set to your Node.js version
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./plugin-settings
+
+      - name: Build
+        run: npm run build
+        working-directory: ./plugin-settings
+
+      - name: Commit built assets
+        run: |
+          git config --local user.email "support@codedesign.app"
+          git config --local user.name "GitHub Action"
+          git add plugin-settings/build -f
+          git commit -m "Build assets"
+          git push
+
+      - name: Create new tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ github.ref }}
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+          draft: false
+          prerelease: false

@@ -13,11 +13,13 @@ class SettingsPage
     {
         // This function will enqueue your React scripts and styles
         echo (SCRIPT_DEBUG);
-        if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {
-            wp_enqueue_script('mnc_settings_page_script', 'http://localhost:3001/static/js/bundle.js', [], null, true);
-        } else {
-            wp_enqueue_script('mnc_settings_page_script', plugin_dir_url(__FILE__) . 'plugin-settings/build/static/js/main.49dec440.js', [], null, true);
-        }
+        // if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {
+        //     wp_enqueue_script('mnc_settings_page_script', 'http://localhost:3001/static/js/bundle.js', [], null, true);
+        // } else {
+        wp_enqueue_script('mnc_settings_page_script', plugin_dir_url(__FILE__) . 'plugin-settings/build/static/js/main.js', [], null, true);
+        wp_enqueue_style('mnc_settings_page_style', plugin_dir_url(__FILE__) . 'plugin-settings/build/static/css/main.css', [], null, 'all');
+
+        // }
 
 
         $data = [

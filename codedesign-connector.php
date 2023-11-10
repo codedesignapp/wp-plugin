@@ -20,14 +20,14 @@ class MyNoCodeConnector
         new SettingsPage();
         // Other plugin actions and filters can be added here
         add_action('admin_menu', [$this, 'add_settings_page']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_react_app']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_react_app'], 99999);
         // add_action('admin_enqueue_scripts', [$this, 'mnc_enqueue_admin_scripts']);
         add_action('wp_ajax_mnc_handle_sync', [$this, 'mnc_handle_sync']);
         add_action('wp_ajax_nopriv_mnc_handle_sync', [$this, 'mnc_handle_sync']);
         add_filter('the_content', [$this, 'replace_placeholder_with_react_root']);
         add_filter('theme_page_templates', [$this, 'mnc_add_page_template_to_dropdown']);
         add_filter('template_include', [$this, 'mnc_redirect_to_custom_template'], 9999);
-        add_action('wp_enqueue_scripts', [$this, 'mnc_enqueue_styles']);
+        add_action('wp_enqueue_scripts', [$this, 'mnc_enqueue_styles'], 999999);
 
         // For the AJAX validation
         add_action('wp_ajax_validate_api_key', [$this, 'validate_api_key_callback']);
@@ -274,10 +274,14 @@ class MyNoCodeConnector
     {
         // Check if the current page or post contains the placeholder
         if ($this->is_page_or_post_with_placeholder()) {
-            // Enqueue the React app's main.js and vendors~main.js files
-            wp_enqueue_script('mnc-react-vendors', plugin_dir_url(__FILE__) . 'build/static/js/vendors~main.chunk.js', [], null, true);
-            wp_enqueue_script('mnc-react-app', plugin_dir_url(__FILE__) . 'build/static/js/main.js', ['mnc-react-vendors'], null, true);
-            wp_enqueue_script('mnc-react-2-chunk', plugin_dir_url(__FILE__) . 'build/static/js/2.chunk.js', ['mnc-react-app', 'mnc-react-vendors'], null, true);
+            // // Enqueue the React app's main.js and vendors~main.js files
+            wp_enqueue_script('mnc-react-vendors', 'https://wordpress-codedesign.web.app/static/js/vendors~main.chunk.js', [], null, true);
+            wp_enqueue_script('mnc-react-app', 'https://wordpress-codedesign.web.app/static/js/main.js', ['mnc-react-vendors'], null, true);
+            wp_enqueue_script('mnc-react-2-chunk', 'https://wordpress-codedesign.web.app/static/js/2.chunk.js', ['mnc-react-app', 'mnc-react-vendors'], null, true);
+
+            // wp_enqueue_script('mnc-react-vendors', plugin_dir_url(__FILE__) . 'build/static/js/vendors~main.chunk.js', [], null, true);
+            // wp_enqueue_script('mnc-react-app', plugin_dir_url(__FILE__) . 'build/static/js/main.js', ['mnc-react-vendors'], null, true);
+            // wp_enqueue_script('mnc-react-2-chunk', plugin_dir_url(__FILE__) . 'build/static/js/5.chunk.js', ['mnc-react-app', 'mnc-react-vendors'], null, true);
 
             // Get the stored data
             $fetchedData = get_option('cc_project_data', '{}');
