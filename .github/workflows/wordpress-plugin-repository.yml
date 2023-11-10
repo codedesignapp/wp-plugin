@@ -29,8 +29,8 @@ jobs:
         run: |
           git config --local user.email "support@codedesign.app"
           git config --local user.name "GitHub Action"
-          git add plugin-settings/build -f
-          git commit -m "Build assets"
+          git add -A  # Add all changes, including package-lock.json
+          git diff --staged --quiet || git commit -m "Build assets"
           git push
 
       - name: Create new tag
