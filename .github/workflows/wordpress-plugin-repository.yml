@@ -33,12 +33,18 @@ jobs:
           git diff --staged --quiet || git commit -m "Build assets"
           git push
 
-      - name: Create new tag
+      - name: Create a new tag based on commit count
         id: tag_version
-        uses: mathieudutour/github-tag-action@v5.5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ github.ref }}
+        run: |
+          echo "Creating a new tag"
+          TAG_VERSION=v$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+          echo "New tag version $TAG_VERSION"
+          echo ::set-output name=TAG_VERSION::$TAG_VERSION
+
+      - name: Push the new tag
+        run: |
+          git tag ${{ steps.tag_version.outputs.TAG_VERSION }}
+          git push origin ${{ steps.tag_version.outputs.TAG_VERSION }}
 
       - name: Archive the entire plugin directory
         run: |
