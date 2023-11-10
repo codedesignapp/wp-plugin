@@ -48,7 +48,7 @@ jobs:
 
       - name: Archive the entire plugin directory
         run: |
-          zip -r codedesign-wp-plugin-latest.zip . -x "*.git*"
+          zip -r codedesign-wp-plugin-latest.zip . -x "*node_modules*/*" -x "*.git*"
 
       - name: Create GitHub Release
         id: create_release
