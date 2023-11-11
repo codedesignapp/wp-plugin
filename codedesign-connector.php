@@ -374,8 +374,8 @@ class MyNoCodeConnector
     public function mnc_enqueue_styles()
     {
         wp_enqueue_style('mnc-custom-style', plugin_dir_url(__FILE__) . 'css/custom.css');
-        wp_enqueue_style('mnc-req-styles', plugin_dir_url(__FILE__) . 'build/assets/css/reqStyles.css');
-        wp_enqueue_style('mnc-reset-styles', plugin_dir_url(__FILE__) . 'build/assets/css/reset.css');
+        wp_enqueue_style('mnc-req-styles', "https://wordpress-codedesign.web.app/assets/css/reqStyles.css");
+        wp_enqueue_style('mnc-reset-styles', "https://wordpress-codedesign.web.app/assets/css/reset.css");
     }
 
     private function sync_function($apiKey)

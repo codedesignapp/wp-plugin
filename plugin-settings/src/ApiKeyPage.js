@@ -31,7 +31,7 @@ const ApiKeyPage = (props) => {
       <div className="cd-logo">
         <img
           src={
-            "https:/cdn.cdsn.me/v1/storage/buckets/63e727f01c9cd2a8490f/files/6538b048bf70db3aafe9/view?project=63e727dfc53e6679e400"
+            "https://cdn.cdsn.me/v1/storage/buckets/63e727f01c9cd2a8490f/files/6538b048bf70db3aafe9/view?project=63e727dfc53e6679e400"
           }
           alt="CodeDesign Brand Wordmark"
         />
