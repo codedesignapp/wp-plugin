@@ -25,27 +25,17 @@ jobs:
         run: npm run build
         working-directory: ./plugin-settings
 
-      - name: Get the current version number from package.json
-        run: |
-          CURRENT_VERSION=$(jq -r '.version' package.json)
-          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
-
-      - name: Increment the version number
-        run: |
-          VERSION=$(semver "${{ env.CURRENT_VERSION }}" --inc patch)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
       - name: Commit built assets
         run: |
           git config --local user.email "support@codedesign.app"
           git config --local user.name "GitHub Action"
           git add -A  # Add all changes, including package-lock.json
-          git diff --staged --quiet || git commit -m "Build assets for version $VERSION"
+          git diff --staged --quiet || git commit -m "Build assets"
           git push
 
-      - name: Create a new tag based on the incremented version number
+      - name: Create a new tag based on commit count
         run: |
-          TAG_VERSION=$VERSION
+          TAG_VERSION=v$(date +%Y%m%d)-$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
           echo "New tag version $TAG_VERSION"
           echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
 
@@ -58,7 +48,7 @@ jobs:
 
       - name: Archive the entire plugin directory
         run: |
-          zip -r codedesign-wp-plugin-${{ env.TAG_VERSION }}.zip . -x "*node_modules*/*" -x "*.git*"
+          zip -r codedesign-wp-plugin-latest.zip . -x "*node_modules*/*" -x "*.git*"
 
       - name: Create GitHub Release
         id: create_release
@@ -68,6 +58,6 @@ jobs:
           name: Release ${{ env.TAG_VERSION }}
           draft: false
           prerelease: false
-          files: codedesign-wp-plugin-${{ env.TAG_VERSION }}.zip
+          files: codedesign-wp-plugin-latest.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
