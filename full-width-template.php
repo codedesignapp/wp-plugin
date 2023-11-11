@@ -7,18 +7,18 @@ Template Name: Full Width Template
 <?php get_header(); ?>
 
 <style>
-  .page-template-full-width-template .content-area {
-    width: 100%;
-    max-width: 100%;
-    padding: 0;
-    margin: 0;
-}
+    body.page-template-full-width-template .content-area {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
 </style>
 
-<div id="primary" class="content-area">
+<div id="primary" class="content-area full-width-template-scope">
     <main id="main" class="site-main" role="main">
         <?php
-        while ( have_posts() ) : the_post();
+        while (have_posts()) : the_post();
             the_content();
         endwhile;
         ?>
@@ -26,6 +26,3 @@ Template Name: Full Width Template
 </div><!-- #primary -->
 
 <?php get_footer(); ?>
-
-
-

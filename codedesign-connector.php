@@ -8,8 +8,16 @@ Author: CodeDesign.ai
 require_once plugin_dir_path(__FILE__) . 'settings-page.php';
 require_once plugin_dir_path(__FILE__) . 'ConfigManager.php';
 
+require_once plugin_dir_path(__FILE__) . 'plugin-update-checker-5.3/plugin-update-checker.php';
 
-class MyNoCodeConnector
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$myUpdateChecker = PucFactory::buildUpdateChecker(
+    'https://raw.githubusercontent.com/codedesignapp/wp-plugin/main/plugin-update.json',
+    __FILE__, //Full path to the main plugin file or functions.php.
+    'codedesignai-wp-plugin'
+);
+class CodeDesignForWordPress
 {
 
     private $base_hostname;
@@ -456,4 +464,4 @@ class MyNoCodeConnector
 }
 
 // Initialize the plugin
-new MyNoCodeConnector();
+new CodeDesignForWordPress();
