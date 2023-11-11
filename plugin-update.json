@@ -1,7 +1,7 @@
 {
   "name": "Plugin Name",
-  "version": "v20231111-2.4ab1ead",
-  "download_url": "https://github.com/codedesignapp/wp-plugin/releases/download/v20231111-2.4ab1ead/codedesign-wp-plugin-latest.zip",
+  "version": "v20231111-1.fd01037",
+  "download_url": "https://github.com/codedesignapp/wp-plugin/releases/download/v20231111-1.fd01037/codedesign-wp-plugin-latest.zip",
   "sections": {
     "description": "Plugin description here. You can use HTML."
   }
