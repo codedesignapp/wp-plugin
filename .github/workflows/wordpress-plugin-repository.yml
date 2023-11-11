@@ -46,6 +46,21 @@ jobs:
           git tag ${{ env.TAG_VERSION }}
           git push origin ${{ env.TAG_VERSION }}
 
+      - name: Create update JSON file
+        run: |
+          JSON_FILE=plugin-update.json
+          echo "{
+            \"name\": \"Plugin Name\",
+            \"version\": \"${{ env.TAG_VERSION }}\",
+            \"download_url\": \"https://github.com/your-username/your-repo/releases/download/${{ env.TAG_VERSION }}/codedesign-wp-plugin-latest.zip\",
+            \"sections\": {
+              \"description\": \"Plugin description here. You can use HTML.\"
+            }
+          }" > $JSON_FILE
+          git add $JSON_FILE
+          git commit -m "Update JSON file for version ${{ env.TAG_VERSION }}"
+          git push
+
       - name: Archive the entire plugin directory
         run: |
           zip -r codedesign-wp-plugin-latest.zip . -x "*node_modules*/*" -x "*.git*"
