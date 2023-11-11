@@ -52,7 +52,7 @@ jobs:
           echo "{
             \"name\": \"Plugin Name\",
             \"version\": \"${{ env.TAG_VERSION }}\",
-            \"download_url\": \"https://github.com/your-username/your-repo/releases/download/${{ env.TAG_VERSION }}/codedesign-wp-plugin-latest.zip\",
+            \"download_url\": \"https://github.com/codedesignapp/wp-plugin/releases/download/${{ env.TAG_VERSION }}/codedesign-wp-plugin-latest.zip\",
             \"sections\": {
               \"description\": \"Plugin description here. You can use HTML.\"
             }
