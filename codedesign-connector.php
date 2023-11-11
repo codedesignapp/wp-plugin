@@ -15,7 +15,7 @@ use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 $myUpdateChecker = PucFactory::buildUpdateChecker(
     'https://raw.githubusercontent.com/codedesignapp/wp-plugin/main/plugin-update.json',
     __FILE__, //Full path to the main plugin file or functions.php.
-    'codedesignai-wp-plugin'
+    'codedesign-plugin'
 );
 class CodeDesignForWordPress
 {
