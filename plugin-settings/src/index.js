@@ -4,9 +4,9 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-const codeDesignRoot = document.getElementById("cd-root");
+const codeDesignRoot = document.getElementById("root");
 if (codeDesignRoot) {
-  const root = ReactDOM.createRoot(document.getElementById("cd-root"));
+  const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(
     <React.StrictMode>
       <App />

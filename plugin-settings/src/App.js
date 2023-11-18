@@ -1,9 +1,10 @@
 // src/App.js
 
 import React, { useState } from "react";
+import {  Routes, Route, BrowserRouter } from "react-router-dom";
 import ApiKeyPage from "./ApiKeyPage";
 import SyncPage from "./SyncPage";
-
+import Welcome from "./Welcome"
 function App() {
   const [showSettingsLoader, setShowSettingsLoader] = useState(false);
   const apiKeyFromWP = window.wpData && window.wpData.apiKey;
@@ -83,7 +84,31 @@ function App() {
   return (
     <div className="App">
       {/* Your other components or routes here */}
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/welcome"
+            element={
+            
+           <Welcome/>
+            }
 
+          ></Route>
+          <Route path="/" element={
+            <ApiKeyPage
+            showLoader={showSettingsLoader}
+            handleSubmit={handleAPIKeySubmit}
+            apiKey={apiKey}
+            setApiKey={setApiKey}
+            setHasApiKey={setHasApiKey}
+            handleDisconnect={handleAPIKeyDisconnect}
+          />
+          }>
+
+          </Route>
+        </Routes>
+      </BrowserRouter>
+{/* 
       {hasApiKey ? (
         <SyncPage
           setHasApiKey={setHasApiKey}
@@ -99,7 +124,7 @@ function App() {
           setHasApiKey={setHasApiKey}
           handleDisconnect={handleAPIKeyDisconnect}
         />
-      )}
+      )} */}
     </div>
   );
 }
