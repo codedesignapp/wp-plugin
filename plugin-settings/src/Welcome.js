@@ -40,7 +40,7 @@ const Welcome = () => {
           <img
             src={card1_img}
             className="cd-card1-img"
-            alt="Card 1 Image"
+            alt="Card 1"
           ></img>
         </div>
 
@@ -57,7 +57,7 @@ const Welcome = () => {
           <img
             src={card2_img}
             className="cd-card2-img"
-            alt="card 2 Image"
+            alt="card 2 "
           ></img>
         </div>
 
@@ -132,7 +132,7 @@ const Welcome = () => {
           <img
             src={card5_img}
             className="cd-card5-img"
-            alt="card 5 image"
+            alt="card 5 "
           ></img>
         </div>
       </div>
