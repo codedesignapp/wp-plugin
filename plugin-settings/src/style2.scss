@@ -109,20 +109,27 @@ body {
       flex-direction: column;
       gap: 8px;
     }
-    .cd-card1-img {
-      width: 347px;
-      height: 277px;
-      position: absolute;
-      bottom: -154px;
+    .cd-image-wrapper {
+      .image1 {
+        width: 347px;
+        height: 277px;
+        position: absolute;
+        bottom: -154px;
+      }
+      .image2 {
+        position: absolute;
+        right: 35px;
+        bottom: -1px;
+      }
+      .image3 {
+        margin-bottom: 16px;
+      }
     }
-    .cd-card2-img {
-      position: absolute;
-      right: 35px;
-      bottom: -1px;
+    .cd-card-img {
+      width: 100%;
+      height: 100%;
     }
-    .cd-card3-img {
-      margin-bottom: 16px;
-    }
+
     .cd-card-wrapper {
       margin: 0;
       @include flex-column;
@@ -144,35 +151,40 @@ body {
     gap: 16px;
     width: 1250px;
 
+    .cd-wrapper-outer {
+      overflow-y: hidden;
+      background: $neutral0;
+      flex: 0 1 calc(33.33% - 8px);
+      height: 297px;
+      border-radius: 10px;
+      width: 95vw;
+    }
     .cd-card-wrapper4 {
       margin: 0;
       display: flex;
       flex-direction: column;
       padding: 32px;
       gap: 20px;
-      border-radius: 10px;
-      background: $neutral0;
-      align-items: flex-start;
       position: relative;
-      height: 297px;
-      overflow-y: hidden;
-      flex: 0 1 calc(33.33% - 8px);
     }
     .cd-card-wrapper5 {
       border-radius: 10px;
       background: $neutral0;
-
       height: 297px;
       gap: 20px;
       flex: 1 0 0;
       position: relative;
       overflow-y: hidden;
-      .cd-card5-img {
+      .image-wrap {
         position: absolute;
         right: 32px;
         top: 0;
         width: 313px;
         z-index: 0;
+        .cd-card5-img {
+          width: 100%;
+          height: 100%;
+        }
       }
       .cd-card-content {
         padding: 44px 32px;
@@ -290,20 +302,69 @@ body {
 @media screen and (max-width: 480px) {
   .cd-welcome-container {
     .cd-top-bar {
-      max-width: 480px;
+      max-width: 100vw;
+      width: 100vw;
     }
     .cd-cards-container,
     .cd-cards-container-2 {
       flex-direction: column;
 
       .cd-card-wrapper {
-        height: 500px;
-        background-color: #524a9a;
+        width: 95vw;
+        height: auto;
         flex-direction: column;
+        max-width: 95vw;
       }
     }
-    .cd-card1-img {
-      display: none;
+    .cd-cards-container-2 {
+      max-width: 95vw;
+
+      .cd-card-wrapper5 {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        height: auto;
+        position: relative;
+        justify-content: center;
+        align-items: center;
+        width: 95vw;
+        .cd-card-box2 {
+          max-width: fit-content;
+        }
+        .cd-box2-text {
+          max-width: 80vw;
+        }
+        .image-wrap {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          position: relative;
+          top: 0;
+          bottom: 0;
+          left: 0;
+        }
+        .cd-card-content {
+          width: 95vw;
+        }
+      }
+    }
+    .image-wrapper {
+      display: flex;
+      justify-content: center;
+    }
+    .cd-thumbnail-wrapper {
+      width: 80vw;
+      background-repeat: no-repeat;
+      background-size: cover;
+      .cd-thumbnail-overlay {
+        background-repeat: no-repeat;
+        width: 80vw;
+      }
+    }
+    .cd-thumbnail-overlay {
+      background-repeat: no-repeat;
+      width: 80vw;
     }
   }
 }

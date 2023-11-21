@@ -36,12 +36,15 @@ const Welcome = () => {
               settings
             </p>
           </div>
-
-          <img
+       <div className="cd-image-wrapper image1">
+       <img
             src={card1_img}
-            className="cd-card1-img"
+            className="cd-card-img "
             alt="Card 1"
           ></img>
+
+       </div>
+         
         </div>
 
         {/* card 2  */}
@@ -54,22 +57,29 @@ const Welcome = () => {
               settings
             </p>
           </div>
+          <div className="cd-image-wrapper image2">
           <img
             src={card2_img}
-            className="cd-card2-img"
+            className="cd-card-img"
             alt="card 2 "
           ></img>
+          </div>
+         
         </div>
 
         {/* card  3 */}
         <div className="cd-card-wrapper">
           <h2 className="cd-card-number">03</h2>
           <div>
+            <div className="cd-image-wrapper">
+
             <img
               src={card3_img}
-              className="cd-card3-img"
+              className="cd-card-img"
               alt="card 3 image"
             ></img>
+            </div>
+          
            <div className="cd-card-wrap">
             <h2 className="cd-card-title">Sync CodeDesign Pages</h2>
             <p className="cd-card-description">
@@ -82,6 +92,7 @@ const Welcome = () => {
 
       {/* card 4  */}
       <div className="cd-cards-container-2">
+        <div className="cd-wrapper-outer">
         <div className="cd-card-wrapper4">
           <h2 className="cd-card-title">Learn How to use plugin ~ 2min</h2>
           <div className="cd-thumbnail-wrapper">
@@ -94,7 +105,7 @@ const Welcome = () => {
               </button>
             </div>
           </div>
-
+          </div>
           {/* If emebeeded video required */}
           {/* <iframe
            width= "343px"
@@ -129,11 +140,14 @@ const Welcome = () => {
               </p>
             </div>
           </div>
-          <img
+          <div className="image-wrap">
+             <img
             src={card5_img}
             className="cd-card5-img"
             alt="card 5 "
           ></img>
+          </div>
+         
         </div>
       </div>
     </div>
