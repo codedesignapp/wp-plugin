@@ -224,10 +224,11 @@ body {
         font-weight: 500;
         line-height: normal;
         letter-spacing: 0.36px;
+        cursor: pointer;
       }
       .cd-box1-btn:hover {
         border-radius: 4px;
-        background: $primary600;;
+        background: $primary600;
       }
       .cd-box-title {
         color: $neutral1000;
