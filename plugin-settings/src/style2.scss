@@ -225,6 +225,10 @@ body {
         line-height: normal;
         letter-spacing: 0.36px;
       }
+      .cd-box1-btn:hover {
+        border-radius: 4px;
+        background: $primary600;;
+      }
       .cd-box-title {
         color: $neutral1000;
         font-family: Roboto;
