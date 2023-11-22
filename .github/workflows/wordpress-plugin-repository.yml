@@ -33,8 +33,6 @@ jobs:
           NEW_VERSION="${ADDR[0]}.${ADDR[1]}.$PATCH_VERSION"
           echo "New Version: $NEW_VERSION"
           sed -i "s/$CURRENT_VERSION/$NEW_VERSION/" codedesign-connector.php
-          git add codedesign-connector.php
-          git commit -m "Increment plugin version to $NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Commit built assets
