@@ -38,7 +38,11 @@ const ApiKeyPage = (props) => {
       </div>
       <p className="cd-api-intro-text">
         Enter your CodeDesign Project API Key. Here's a{" "}
-        <a href="https://www.youtube.com/watch?v=oJkF0eZamUc" target="_blank">
+        <a
+          href="https://www.youtube.com/watch?v=oJkF0eZamUc"
+          rel="noreferrer"
+          target="_blank"
+        >
           short video{" "}
         </a>{" "}
         that will help you get started.
@@ -65,7 +69,12 @@ const ApiKeyPage = (props) => {
             <strong>project's settings</strong>, and then{" "}
             <strong>Integrations</strong>. If you need any help, do not hesitate
             to get in{" "}
-            <a href="https://codedesign.ai/support" className="span">
+            <a
+              href="https://codedesign.ai/support"
+              rel="noreferrer"
+              target="_blank"
+              className="span"
+            >
               touch with us
             </a>
             .
