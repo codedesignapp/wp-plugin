@@ -53,7 +53,8 @@ jobs:
       - name: Archive the entire plugin directory for updater
         run: |
           mkdir codedesign-plugin
-          cp -r * codedesign-plugin
+          shopt -s extglob
+          cp -r !(codedesign-plugin) codedesign-plugin/
           zip -r codedesign-wp-plugin-updater-latest.zip codedesign-plugin -x "*node_modules*/*" -x "*.git*"
           rm -rf codedesign-plugin
 
