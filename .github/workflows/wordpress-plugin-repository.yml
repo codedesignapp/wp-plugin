@@ -58,7 +58,7 @@ jobs:
         run: |
           mkdir codedesign-plugin
           shopt -s extglob
-          cp -r !(codedesign-plugin) codedesign-plugin/
+          cp -r !(codedesign-plugin|codedesign-wp-plugin-installer-latest.zip) codedesign-plugin/
           zip -r codedesign-wp-plugin-updater-latest.zip codedesign-plugin -x "*node_modules*/*" -x "*.git*"
           rm -rf codedesign-plugin
 
