@@ -50,6 +50,10 @@ jobs:
           git tag ${{ env.NEW_VERSION }}
           git push origin ${{ env.NEW_VERSION }}
 
+      - name: Archive the entire plugin directory for installer
+        run: |
+          zip -r codedesign-wp-plugin-installer-latest.zip . -x "*node_modules*/*" -x "*.git*"
+
       - name: Archive the entire plugin directory for updater
         run: |
           mkdir codedesign-plugin
@@ -57,10 +61,6 @@ jobs:
           cp -r !(codedesign-plugin) codedesign-plugin/
           zip -r codedesign-wp-plugin-updater-latest.zip codedesign-plugin -x "*node_modules*/*" -x "*.git*"
           rm -rf codedesign-plugin
-
-      - name: Archive the entire plugin directory for installer
-        run: |
-          zip -r codedesign-wp-plugin-installer-latest.zip . -x "*node_modules*/*" -x "*.git*"
 
       - name: Create update JSON file
         run: |
