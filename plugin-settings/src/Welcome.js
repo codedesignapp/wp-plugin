@@ -1,10 +1,6 @@
 import React from "react";
-import logo from "./CodeDesignLogo2.svg";
-import card1_img from "./card1-img.svg";
-import card2_img from "./card2-img.svg";
-import card3_img from "./card3-img.svg";
+
 // import thumbnail from "./video.svg";
-import card5_img from "./card5-img.svg";
 import "./styleguide.css";
 import "./style2.scss";
 
@@ -17,7 +13,7 @@ const Welcome = () => {
   return (
     <div className="cd-welcome-container">
       <div className="cd-banner-container">
-        <img className="cd-banner-image" src={logo} alt="Banner"></img>
+        <img className="cd-banner-image" alt="Banner"></img>
       </div>
       <div className="cd-top-bar">
         <div className="cd-top-header">AI Website pages with CodeDesign</div>
@@ -37,7 +33,7 @@ const Welcome = () => {
             </p>
           </div>
           <div className="cd-image-wrapper image1">
-            <img src={card1_img} className="cd-card-img " alt="Card 1"></img>
+            <img className="cd-card-img " alt="Card 1"></img>
           </div>
         </div>
 
@@ -52,7 +48,7 @@ const Welcome = () => {
             </p>
           </div>
           <div className="cd-image-wrapper image2">
-            <img src={card2_img} className="cd-card-img" alt="card 2 "></img>
+            <img className="cd-card-img" alt="card 2 "></img>
           </div>
         </div>
 
@@ -61,7 +57,7 @@ const Welcome = () => {
           <h2 className="cd-card-number">03</h2>
           <div>
             <div className="cd-image-wrapper">
-              <img src={card3_img} className="cd-card-img" alt="card 3 "></img>
+              <img className="cd-card-img" alt="card 3 "></img>
             </div>
 
             <div className="cd-card-wrap">
@@ -126,7 +122,7 @@ const Welcome = () => {
             </div>
           </div>
           <div className="image-wrap">
-            <img src={card5_img} className="cd-card5-img" alt="card 5 "></img>
+            <img className="cd-card5-img" alt="card 5 "></img>
           </div>
         </div>
       </div>
