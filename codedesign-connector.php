@@ -2,7 +2,7 @@
 /*
 Plugin Name: CodeDesign.ai for WordPress 
 Description: Brings the power of CodeDesign.ai to Wordpress
-Version: 1.3.48
+Version: 1.3.49
 Author: CodeDesign.ai
 */
 require_once plugin_dir_path(__FILE__) . 'settings-page.php';
