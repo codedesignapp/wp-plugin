@@ -25,6 +25,18 @@ jobs:
         run: npm run build
         working-directory: ./plugin-settings
 
+      - name: Increment plugin version
+        run: |
+          CURRENT_VERSION=$(grep -oP "Version: \K(.*)" codedesign-connector.php)
+          IFS='.' read -ra ADDR <<< "$CURRENT_VERSION"
+          PATCH_VERSION=$((ADDR[2]+1))
+          NEW_VERSION="${ADDR[0]}.${ADDR[1]}.$PATCH_VERSION"
+          echo "New Version: $NEW_VERSION"
+          sed -i "s/$CURRENT_VERSION/$NEW_VERSION/" codedesign-connector.php
+          git add codedesign-connector.php
+          git commit -m "Increment plugin version to $NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
       - name: Commit built assets
         run: |
           git config --local user.email "support@codedesign.app"
@@ -33,32 +45,26 @@ jobs:
           git diff --staged --quiet || git commit -m "Build assets"
           git push
 
-      - name: Create a new tag based on commit count
-        run: |
-          TAG_VERSION=v$(date +%Y%m%d)-$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
-          echo "New tag version $TAG_VERSION"
-          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
-
-      - name: Push the new tag
+      - name: Tag the new version
         run: |
           git config --global user.name 'Manjunath'
           git config --global user.email 'manjunath@codedesign.app'
-          git tag ${{ env.TAG_VERSION }}
-          git push origin ${{ env.TAG_VERSION }}
+          git tag ${{ env.NEW_VERSION }}
+          git push origin ${{ env.NEW_VERSION }}
 
       - name: Create update JSON file
         run: |
           JSON_FILE=plugin-update.json
           echo "{
-            \"name\": \"Plugin Name\",
-            \"version\": \"${{ env.TAG_VERSION }}\",
-            \"download_url\": \"https://github.com/codedesignapp/wp-plugin/releases/download/${{ env.TAG_VERSION }}/codedesign-wp-plugin-latest.zip\",
+            \"name\": \"CodeDesign.ai for WordPress\",
+            \"version\": \"${{ env.NEW_VERSION }}\",
+            \"download_url\": \"https://github.com/codedesignapp/wp-plugin/releases/download/${{ env.NEW_VERSION }}/codedesign-wp-plugin-latest.zip\",
             \"sections\": {
-              \"description\": \"Plugin description here. You can use HTML.\"
+              \"description\": \"<div><h2>CodeDesign.ai for WordPress</h2><p>Transform your WordPress experience with the <strong>CodeDesign.ai for WordPress plugin</strong>, a cutting-edge tool that integrates the advanced AI capabilities of CodeDesign.ai into your WordPress site. This plugin revolutionizes the process of web design and development for designers, developers, and content managers.</p><h3>Key Features:</h3><ul><li><strong>Instant Publishing:</strong> Seamlessly transfer your beautifully crafted pages from CodeDesign.ai to WordPress with just one click, ensuring design consistency and integrity.</li><li><strong>Effortless Updates:</strong> Synchronize changes made on CodeDesign.ai with your WordPress site effortlessly, keeping your content up-to-date without manual intervention.</li><li><strong>Design Freedom:</strong> Utilize the AI-driven design tools of CodeDesign.ai to create responsive, eye-catching pages that are fully compatible with WordPress.</li><li><strong>Simplified Workflow:</strong> This plugin bridges the gap between CodeDesign.ai and WordPress, streamlining your web design process and enabling you to focus more on creativity and content.</li><li><strong>Enhanced SEO:</strong> Benefit from SEO-optimized pages created through CodeDesign.ai, improving your WordPress site's search engine ranking and visibility.</li></ul><p>The <strong>CodeDesign.ai for WordPress</strong> plugin is your gateway to a new era of web design where AI-driven efficiency and creative freedom converge. It's the perfect tool for building a dynamic, visually stunning, and user-friendly website that stays ahead in the digital world.</p></div>\"
             }
           }" > $JSON_FILE
           git add $JSON_FILE
-          git commit -m "Update JSON file for version ${{ env.TAG_VERSION }}"
+          git commit -m "Update JSON file for version ${{ env.NEW_VERSION }}"
           git push
 
       - name: Archive the entire plugin directory
@@ -69,8 +75,8 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.TAG_VERSION }}
-          name: Release ${{ env.TAG_VERSION }}
+          tag_name: ${{ env.NEW_VERSION }}
+          name: Release ${{ env.NEW_VERSION }}
           draft: false
           prerelease: false
           files: codedesign-wp-plugin-latest.zip
