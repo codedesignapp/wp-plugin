@@ -1,8 +1,8 @@
 {
   "name": "CodeDesign.ai for WordPress",
-  "version": "1.3.45",
-  "download_url": "https://github.com/codedesignapp/wp-plugin/releases/download/1.3.45/codedesign-wp-plugin-updater-latest.zip",
-  "install_url": "https://github.com/codedesignapp/wp-plugin/releases/download/1.3.45/codedesign-wp-plugin-installer-latest.zip",
+  "version": "1.3.46",
+  "download_url": "https://github.com/codedesignapp/wp-plugin/releases/download/1.3.46/codedesign-wp-plugin-updater-latest.zip",
+  "install_url": "https://github.com/codedesignapp/wp-plugin/releases/download/1.3.46/codedesign-wp-plugin-installer-latest.zip",
   "sections": {
     "description": "<div><h2> CodeDesign.ai for WordPress</h2><p>Transform your WordPress experience with the <strong>CodeDesign.ai for WordPress plugin</strong>...</p></div>"
   }
