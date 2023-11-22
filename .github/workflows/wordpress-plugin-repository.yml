@@ -70,7 +70,7 @@ jobs:
             \"download_url\": \"https://github.com/codedesignapp/wp-plugin/releases/download/${{ env.NEW_VERSION }}/codedesign-wp-plugin-updater-latest.zip\",
             \"install_url\": \"https://github.com/codedesignapp/wp-plugin/releases/download/${{ env.NEW_VERSION }}/codedesign-wp-plugin-installer-latest.zip\",
             \"sections\": {
-              \"description\": \"<div><h2>CodeDesign.ai for WordPress</h2><p>Transform your WordPress experience with the <strong>CodeDesign.ai for WordPress plugin</strong>...</p></div>\"
+              \"description\": \"<div><h2> CodeDesign.ai for WordPress</h2><p>Transform your WordPress experience with the <strong>CodeDesign.ai for WordPress plugin</strong>...</p></div>\"
             }
           }" > $JSON_FILE
           git add $JSON_FILE
