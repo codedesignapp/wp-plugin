@@ -2,7 +2,7 @@
 /*
 Plugin Name: CodeDesign.ai for WordPress 
 Description: Brings the power of CodeDesign.ai to Wordpress
-Version: 1.0
+Version: 1.3.42
 Author: CodeDesign.ai
 */
 require_once plugin_dir_path(__FILE__) . 'settings-page.php';
@@ -27,7 +27,7 @@ class CodeDesignForWordPress
         // Initialize the scripts class
         new SettingsPage();
         // Other plugin actions and filters can be added here
-        add_action('admin_menu', [$this, 'add_settings_page']);
+        add_action('admin_menu', [$this, 'add_plugin_pages']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_react_app'], 99999);
         // add_action('admin_enqueue_scripts', [$this, 'mnc_enqueue_admin_scripts']);
         add_action('wp_ajax_mnc_handle_sync', [$this, 'mnc_handle_sync']);
@@ -126,7 +126,7 @@ class CodeDesignForWordPress
         return $templates;
     }
 
-    public function add_settings_page()
+    public function add_plugin_pages()
     {
         $svg_path = plugin_dir_path(__FILE__) . 'codedesign_logo.svg';
         // Check if the file exists before trying to encode it
@@ -140,14 +140,32 @@ class CodeDesignForWordPress
             $icon_data_uri = 'dashicons-admin-generic';
         }
         add_menu_page(
-            'CodeDesign',
-            'CodeDesign',
-            'manage_options',
+            'CodeDesign', // Page title
+            'CodeDesign', // Menu title
+            'manage_options', // Capability
             'mnc-settings',
             [$this, 'render_settings_page'],
             $icon_data_uri,
-            6   // Position on the sidebar; adjust this as needed
+            6 // Position
         );
+
+        // add_submenu_page(
+        //     'mnc-settings', // Parent slug
+        //     'CodeDesign Plugin Welcome Page', // Page title
+        //     'Welcome', // Menu title
+        //     'manage_options', // Capability
+        //     'codedesign-welcome', // Menu slug
+        //     [$this, 'render_welcome_page'] // Callback function
+        // );
+        // add_submenu_page(
+        //     'mnc-settings', // Parent slug
+        //     'CodeDesign Settings', // Page title
+        //     'Settings', // Menu title
+        //     'manage_options', // Capability
+        //     'codedesign-settings', // Menu slug
+        //     [$this, 'render_settings_page'] // Callback function
+        // );
+        // remove_submenu_page('mnc-settings', 'mnc-settings');
     }
 
     public function render_settings_page()
@@ -158,6 +176,15 @@ class CodeDesignForWordPress
         $mnc_admin_scripts = new SettingsPage();
         $mnc_admin_scripts->render_settings_page();
     }
+
+
+    public function render_welcome_page()
+    {
+
+        echo '<div id="cd-root" class="codedesign-wrapper"></div>'; // Same mount point for React app
+        echo "<script>localStorage.setItem('initialPage', '/welcome');</script>";
+    }
+
 
 
     /* Validating API Key */

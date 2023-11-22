@@ -30,7 +30,7 @@ const SyncPage = (props) => {
   return (
     <div className="cd-sync-container">
       <div className="cd-sync-header-container">
-        <div className="cd-sync-header-h1">Pages are now in Sync!</div>
+        <div className="cd-sync-header-h1">Pages are now in sync!</div>
         <div className="cd-sync-header-p">
           All your CodeDesign.ai pages are now synced to WordPress.
         </div>

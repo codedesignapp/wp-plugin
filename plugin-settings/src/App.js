@@ -1,17 +1,28 @@
 // src/App.js
 
-import React, { useState } from "react";
-import {  Routes, Route, BrowserRouter } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import ApiKeyPage from "./ApiKeyPage";
 import SyncPage from "./SyncPage";
-import Welcome from "./Welcome"
+import Welcome from "./Welcome";
 function App() {
+  const navigate = useNavigate();
+
   const [showSettingsLoader, setShowSettingsLoader] = useState(false);
   const apiKeyFromWP = window.wpData && window.wpData.apiKey;
   console.log(apiKeyFromWP, "testmonark");
 
   const [apiKey, setApiKey] = useState(""); // Initially empty
   const [hasApiKey, setHasApiKey] = useState(apiKeyFromWP ? true : false);
+
+  useEffect(() => {
+    const initialPage = localStorage.getItem("initialPage");
+    console.log(initialPage, "testtt");
+    if (initialPage) {
+      navigate(initialPage);
+      localStorage.removeItem("initialPage"); // Clear the item after redirecting
+    }
+  }, [navigate]);
 
   // Inside your component
   function handleAPIKeyDisconnect() {
@@ -84,31 +95,31 @@ function App() {
   return (
     <div className="App">
       {/* Your other components or routes here */}
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/welcome"
-            element={
-            
-           <Welcome/>
-            }
-
-          ></Route>
-          <Route path="/" element={
-            <ApiKeyPage
-            showLoader={showSettingsLoader}
-            handleSubmit={handleAPIKeySubmit}
-            apiKey={apiKey}
-            setApiKey={setApiKey}
-            setHasApiKey={setHasApiKey}
-            handleDisconnect={handleAPIKeyDisconnect}
-          />
-          }>
-
-          </Route>
-        </Routes>
-      </BrowserRouter>
-{/* 
+      <Routes>
+        <Route path="/welcome" element={<Welcome />}></Route>
+        <Route
+          path="/"
+          element={
+            hasApiKey ? (
+              <SyncPage
+                setHasApiKey={setHasApiKey}
+                showLoader={showSettingsLoader}
+                handleDisconnect={handleAPIKeyDisconnect}
+              />
+            ) : (
+              <ApiKeyPage
+                showLoader={showSettingsLoader}
+                handleSubmit={handleAPIKeySubmit}
+                apiKey={apiKey}
+                setApiKey={setApiKey}
+                setHasApiKey={setHasApiKey}
+                handleDisconnect={handleAPIKeyDisconnect}
+              />
+            )
+          }
+        ></Route>
+      </Routes>
+      {/* 
       {hasApiKey ? (
         <SyncPage
           setHasApiKey={setHasApiKey}
