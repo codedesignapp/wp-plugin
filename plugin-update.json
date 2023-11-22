@@ -1,7 +1,7 @@
 {
-  "name": "CodeDesign.ai for WordPress",
-  "version": "v20231111-2.fcdf69a",
-  "download_url": "https://github.com/codedesignapp/wp-plugin/releases/download/v20231111-2.fcdf69a/codedesign-wp-plugin-latest.zip",
+  "name": "Plugin Name",
+  "version": "v20231122-2.2ffb654",
+  "download_url": "https://github.com/codedesignapp/wp-plugin/releases/download/v20231122-2.2ffb654/codedesign-wp-plugin-latest.zip",
   "sections": {
     "description": "Plugin description here. You can use HTML."
   }
