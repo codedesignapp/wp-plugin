@@ -152,8 +152,7 @@ const Welcome = () => {
               <div className="cd-box-wrapper">
                 <h2 className="cd-box-title">Do you need Help?</h2>
                 <p className="cd-box-text">
-                  You can find your site's API key by going to then your site's
-                  settings
+                  We're happy to assist you with anything!
                 </p>
               </div>
               <button
@@ -166,8 +165,9 @@ const Welcome = () => {
 
             <div className="cd-card-box2">
               <p className="cd-box2-text">
-                This version of the plugin is not compatible with CodeDesign
-                pages. Please contact{" "}
+                If you get a blank page or get an error while connecting
+                (Invalid API key), try hitting the Publish button on
+                CodeDesign.ai's builder. Don't hesitate to get in touch with
                 <span>
                   {" "}
                   <a href="https://codedesign.ai/support">
