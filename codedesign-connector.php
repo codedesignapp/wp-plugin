@@ -2,7 +2,7 @@
 /*
 Plugin Name: CodeDesign.ai for WordPress 
 Description: Brings the power of CodeDesign.ai to Wordpress
-Version: 1.3.49
+Version: 1.3.50
 Author: CodeDesign.ai
 */
 require_once plugin_dir_path(__FILE__) . 'settings-page.php';
@@ -47,8 +47,22 @@ class CodeDesignForWordPress
         //initiate rest api (webhook)
         add_action('rest_api_init', [$this, 'mnc_register_webhook_endpoint']);
 
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_styles']);
+
+
         $this->base_hostname = ConfigManager::get('base_hostname');
     }
+
+    public function enqueue_admin_styles($hook)
+    {
+        error_log($hook);
+
+        // Check if we're on the plugin's page
+        if ($hook == 'toplevel_page_mnc-settings' || $hook == 'codedesign_page_codedesign-welcome') {
+            wp_add_inline_style('wp-admin', '#wpfooter { display: none; }');
+        }
+    }
+
 
     public function mnc_register_webhook_endpoint()
     {
@@ -149,23 +163,23 @@ class CodeDesignForWordPress
             6 // Position
         );
 
-        // add_submenu_page(
-        //     'mnc-settings', // Parent slug
-        //     'CodeDesign Plugin Welcome Page', // Page title
-        //     'Welcome', // Menu title
-        //     'manage_options', // Capability
-        //     'codedesign-welcome', // Menu slug
-        //     [$this, 'render_welcome_page'] // Callback function
-        // );
-        // add_submenu_page(
-        //     'mnc-settings', // Parent slug
-        //     'CodeDesign Settings', // Page title
-        //     'Settings', // Menu title
-        //     'manage_options', // Capability
-        //     'codedesign-settings', // Menu slug
-        //     [$this, 'render_settings_page'] // Callback function
-        // );
-        // remove_submenu_page('mnc-settings', 'mnc-settings');
+        add_submenu_page(
+            'mnc-settings', // Parent slug
+            'CodeDesign Plugin Welcome Page', // Page title
+            'Welcome', // Menu title
+            'manage_options', // Capability
+            'codedesign-welcome', // Menu slug
+            [$this, 'render_welcome_page'] // Callback function
+        );
+        add_submenu_page(
+            'mnc-settings', // Parent slug
+            'CodeDesign Settings', // Page title
+            'Settings', // Menu title
+            'manage_options', // Capability
+            'codedesign-settings', // Menu slug
+            [$this, 'render_settings_page'] // Callback function
+        );
+        remove_submenu_page('mnc-settings', 'mnc-settings');
     }
 
     public function render_settings_page()

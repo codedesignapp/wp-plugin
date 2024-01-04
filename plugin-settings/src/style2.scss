@@ -6,6 +6,13 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+h1,
+h2,
+p {
+  margin: 0 !important;
+}
+
 body {
   background: $neutral200;
 }
@@ -21,8 +28,8 @@ body {
 }
 
 .cd-welcome-container {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
   display: flex;
   margin: 0 11px 0 14px;
   flex-direction: column;
@@ -276,9 +283,11 @@ body {
   .cd-thumbnail-wrapper {
     width: 343px;
     height: 193px;
-    // background-image: url("./video.svg");
+    background-image: url("https://assets.codedesign.app/v1/storage/buckets/63e727f01c9cd2a8490f/files/6596514d88b2c67559e0/view?project=63e727dfc53e6679e400");
     object-fit: cover;
     position: relative;
+    background-position: top left;
+    background-size: contain;
   }
   .cd-thumbnail-overlay {
     display: flex;
