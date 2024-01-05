@@ -334,11 +334,11 @@ class CodeDesignForWordPress
 
             // Enqueue the React app's scripts with the determined base URL
             wp_enqueue_script('mnc-react-vendors', $base_url . 'vendors~main.chunk.js', [], null, true);
-            wp_enqueue_script('mnc-react-vendors', $base_url . 'vendors.chunk.js', [], null, true);
-            wp_enqueue_script('mnc-react-app', $base_url . 'main.js', ['mnc-react-vendors'], null, true);
-            wp_enqueue_script('mnc-react-2-chunk', $base_url . '2.chunk.js', ['mnc-react-app', 'mnc-react-vendors'], null, true);
-            wp_enqueue_script('mnc-react-0-chunk', $base_url . '0.chunk.js', ['mnc-react-app', 'mnc-react-vendors'], null, true);
-            wp_enqueue_script('mnc-react-0-chunk', $base_url . '3.chunk.js', ['mnc-react-app', 'mnc-react-vendors'], null, true);
+            wp_enqueue_script('mnc-react-vendors2', $base_url . 'vendors.chunk.js', [], null, true);
+            wp_enqueue_script('mnc-react-app', $base_url . 'main.js', ['mnc-react-vendors', 'mnc-react-vendors2'], null, true);
+            wp_enqueue_script('mnc-react-2-chunk', $base_url . '2.chunk.js', ['mnc-react-app', 'mnc-react-vendors', 'mnc-react-vendors2'], null, true);
+            wp_enqueue_script('mnc-react-0-chunk', $base_url . '0.chunk.js', ['mnc-react-app', 'mnc-react-vendors', 'mnc-react-vendors2'], null, true);
+            wp_enqueue_script('mnc-react-0-chunk', $base_url . '3.chunk.js', ['mnc-react-app', 'mnc-react-vendors', 'mnc-react-vendors2'], null, true);
 
             // Get the stored data
             $fetchedData = get_option('cc_project_data', '{}');
