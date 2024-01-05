@@ -388,7 +388,7 @@ class CodeDesignForWordPress
                     'post_content' => $placeholderContent
                 ]);
 
-                if ($pageName === '404') {
+                if ($pageName === 404 || $pageName === "404") {
                     error_log('Ignoring 404 page');
                     continue; // Skip this iteration and proceed with the next one
                 }
@@ -401,6 +401,10 @@ class CodeDesignForWordPress
             } else {
                 error_log('case2 ' . $pageName);
 
+                if ($pageName === 404 || $pageName === "404") {
+                    error_log('Ignoring 404 page');
+                    continue; // Skip this iteration and proceed with the next one
+                }
                 // Create a new post/page
                 $newPageID =  wp_insert_post([
                     'post_title'    => $pageName,
