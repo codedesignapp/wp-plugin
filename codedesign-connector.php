@@ -323,14 +323,20 @@ class CodeDesignForWordPress
     {
         // Check if the current page or post contains the placeholder
         if ($this->is_page_or_post_with_placeholder()) {
-            // // Enqueue the React app's main.js and vendors~main.js files
-            wp_enqueue_script('mnc-react-vendors', 'https://wordpress-codedesign.web.app/static/js/vendors~main.chunk.js', [], null, true);
-            wp_enqueue_script('mnc-react-app', 'https://wordpress-codedesign.web.app/static/js/main.js', ['mnc-react-vendors'], null, true);
-            wp_enqueue_script('mnc-react-2-chunk', 'https://wordpress-codedesign.web.app/static/js/2.chunk.js', ['mnc-react-app', 'mnc-react-vendors'], null, true);
 
-            // wp_enqueue_script('mnc-react-vendors', plugin_dir_url(__FILE__) . 'build/static/js/vendors~main.chunk.js', [], null, true);
-            // wp_enqueue_script('mnc-react-app', plugin_dir_url(__FILE__) . 'build/static/js/main.js', ['mnc-react-vendors'], null, true);
-            // wp_enqueue_script('mnc-react-2-chunk', plugin_dir_url(__FILE__) . 'build/static/js/5.chunk.js', ['mnc-react-app', 'mnc-react-vendors'], null, true);
+            // Determine the correct hostname
+            $hostname = $_SERVER['HTTP_HOST'];
+
+            // Set the base URL based on the current hostname
+            $base_url = ($hostname === 'wordpress-plugin-beta-clients.codedesign.ai') ?
+                "https://wordpress-codedesign-beta.web.app/static/js/" :
+                "https://wordpress-codedesign.web.app/static/js/";
+
+            // Enqueue the React app's scripts with the determined base URL
+            wp_enqueue_script('mnc-react-vendors', $base_url . 'vendors~main.chunk.js', [], null, true);
+            wp_enqueue_script('mnc-react-app', $base_url . 'main.chunk.js', ['mnc-react-vendors'], null, true);
+            wp_enqueue_script('mnc-react-2-chunk', $base_url . '2.chunk.js', ['mnc-react-app', 'mnc-react-vendors'], null, true);
+            wp_enqueue_script('mnc-react-0-chunk', $base_url . '0.chunk.js', ['mnc-react-app', 'mnc-react-vendors'], null, true);
 
             // Get the stored data
             $fetchedData = get_option('cc_project_data', '{}');
@@ -385,8 +391,6 @@ class CodeDesignForWordPress
                     continue; // Skip this iteration and proceed with the next one
                 }
 
-
-
                 // Check if the pageName is "home" and set it as the homepage
                 if ($pageName === 'home') {
                     update_option('show_on_front', 'page');
@@ -422,9 +426,20 @@ class CodeDesignForWordPress
 
     public function mnc_enqueue_styles()
     {
+        // Enqueue the local style
         wp_enqueue_style('mnc-custom-style', plugin_dir_url(__FILE__) . 'css/custom.css');
-        wp_enqueue_style('mnc-req-styles', "https://wordpress-codedesign.web.app/assets/css/reqStyles.css");
-        wp_enqueue_style('mnc-reset-styles', "https://wordpress-codedesign.web.app/assets/css/reset.css");
+
+        // Determine the correct hostname
+        $hostname = $_SERVER['HTTP_HOST'];
+
+        // Set the base URL based on the current hostname
+        $base_url = ($hostname === 'wordpress-plugin-beta-clients.codedesign.ai') ?
+            "https://wordpress-codedesign-beta.web.app/assets/css/" :
+            "https://wordpress-codedesign.web.app/assets/css/";
+
+        // Enqueue the styles with the determined base URL
+        wp_enqueue_style('mnc-req-styles', $base_url . "reqStyles.css");
+        wp_enqueue_style('mnc-reset-styles', $base_url . "reset.css");
     }
 
     private function sync_function($apiKey)
