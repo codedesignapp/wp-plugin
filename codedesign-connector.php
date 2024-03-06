@@ -479,6 +479,12 @@ class CodeDesignForWordPress
         $logMessage = print_r($pageNames, true);
 
         // Log the array to the error log
+
+        // Temporarily disable SSL verification
+        add_filter('https_ssl_verify', '__return_false');
+        add_filter('https_local_ssl_verify', '__return_false');
+
+
         datadog_logger($logMessage);
         $ajaxUrl = admin_url('admin-ajax.php');
         $body = array(
@@ -491,6 +497,10 @@ class CodeDesignForWordPress
             'body' => $body,
             'timeout' => 15
         ));
+
+        // Remove the filter to re-enable SSL verification for subsequent requests
+        remove_filter('https_ssl_verify', '__return_false');
+        remove_filter('https_local_ssl_verify', '__return_false');
 
         if (is_wp_error($syncResponse)) {
             datadog_logger("Error during sync: " . $syncResponse->get_error_message());
