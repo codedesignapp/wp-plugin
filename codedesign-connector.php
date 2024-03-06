@@ -36,7 +36,7 @@ class CodeDesignForWordPress
         add_action('wp_ajax_nopriv_mnc_handle_sync', [$this, 'mnc_handle_sync']);
         add_filter('the_content', [$this, 'replace_placeholder_with_react_root']);
         add_filter('theme_page_templates', [$this, 'mnc_add_page_template_to_dropdown']);
-        add_filter('template_include', [$this, 'mnc_redirect_to_custom_template'], 9999);
+        add_filter('template_include', [$this, 'mnc_redirect_to_custom_template'], PHP_INT_MAX);
         add_action('wp_enqueue_scripts', [$this, 'mnc_enqueue_styles'], 999999);
 
         // For the AJAX validation
