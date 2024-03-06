@@ -9,6 +9,8 @@ require_once plugin_dir_path(__FILE__) . 'settings-page.php';
 require_once plugin_dir_path(__FILE__) . 'ConfigManager.php';
 
 require_once plugin_dir_path(__FILE__) . 'plugin-update-checker-5.3/plugin-update-checker.php';
+require_once(plugin_dir_path(__FILE__) . 'datadog-logger.php');
+
 
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
@@ -83,6 +85,9 @@ class CodeDesignForWordPress
 
     public function handle_disconnect(WP_REST_Request $request)
     {
+
+        datadog_logger('Disconnect request sent');
+
         // Authenticate the request, for example with an API key
         $apiKey = $request->get_param('api_key');
         if (!$apiKey) {
@@ -101,6 +106,8 @@ class CodeDesignForWordPress
 
     public function handle_webhook(WP_REST_Request $request)
     {
+        datadog_logger('Webhook in progress');
+
         // Get the apiKey from the request data (assuming it's passed in the webhook call)
         $apiKey = $request->get_param('api_key');
 
@@ -205,6 +212,7 @@ class CodeDesignForWordPress
 
     public function validate_api_key_callback()
     {
+
         $apiKey = isset($_POST['api_key']) ? sanitize_text_field($_POST['api_key']) : '';
 
         $isValid = $this->validate_api_key($apiKey);
@@ -219,9 +227,12 @@ class CodeDesignForWordPress
 
     public function validate_api_key($apiKey)
     {
+
+        datadog_logger('Validating API key');
+
         $pathname = '/wp/validate-key';
         $endpoint = $this->base_hostname . $pathname;
-        error_log($endpoint . " " . "hellow");
+
 
         // Extract the scheme (http or https) and the hostname from site_url
         $parsedUrl = parse_url(site_url());
@@ -243,11 +254,11 @@ class CodeDesignForWordPress
             'timeout' => 15  // Increase timeout to 15 seconds
         ]);
 
-        error_log(print_r($response, true));
+        datadog_logger(print_r($response, true), "error", null, ["codedesign-wordpress-plugin-frontend"]);
 
         // Check the response
         if (is_wp_error($response)) {
-            error_log("Error during API key validation: " . $response->get_error_message());
+            datadog_logger("Error during API key validation: " . $response->get_error_message());
             return false; // Handle the error appropriately
         }
 
@@ -259,7 +270,7 @@ class CodeDesignForWordPress
             if ($this->sync_function($apiKey)) {
                 return true;
             } else {
-                error_log("Failed to sync after successful API key validation.");
+                datadog_logger("Failed to sync after successful API key validation.");
                 return false; // Return false even if the API key is valid but the sync failed.
             }
         }
