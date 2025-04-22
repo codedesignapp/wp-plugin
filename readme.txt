@@ -1,6 +1,6 @@
 === CodeDesign.ai Pages ===
 Contributors: codedesignai
-Tags: nocode, ai website buider
+Tags: nocode, ai website builder
 Requires at least: 5.0
 Tested up to: 6.4
 Stable tag: 1.3.60
