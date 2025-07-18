@@ -356,7 +356,7 @@ class CodeDesignForWordPress
                     return strpos($pageName, 'linked') !== 0 && $pageName !== '404' && $pageName !== 404;
                 });
 
-                if (count($filteredPageNames) >= 7) {
+                if (count($filteredPageNames) >= 5) {
                     return [
                         'valid' => true,
                         'message' => 'API key validated successfully! Your pages are being synced in the background and will appear shortly.'
@@ -390,7 +390,6 @@ class CodeDesignForWordPress
     }
 
 
-    /* Disconnect Logic */
     /* Disconnect Logic */
     public function disconnect_api_key_callback($called_from_webhook = false)
     {
@@ -705,9 +704,12 @@ class CodeDesignForWordPress
             return strpos($pageName, 'linked') !== 0 && $pageName !== '404' && $pageName !== 404;
         });
 
-        if (count($filteredPageNames) >= 7) {
+        $actualPageCount = count($filteredPageNames);
+        datadog_logger("Project analysis: Total pages: " . count($pageNames) . ", Processable pages: " . $actualPageCount . ", Pages: " . implode(', ', $filteredPageNames));
+
+        if ($actualPageCount >= 5) { // Lowered threshold since we're getting timeouts with 7+ on shared hosting
             // Use background processing for large projects
-            datadog_logger("Large project detected (" . count($filteredPageNames) . " pages). Using background processing.");
+            datadog_logger("Large project detected (" . $actualPageCount . " processable pages). Using background processing.");
             $this->schedule_background_sync($pageNames, $data);
 
             // Remove SSL filters
@@ -717,6 +719,7 @@ class CodeDesignForWordPress
             return true; // Return success immediately
         } else {
             // Use direct processing for small projects
+            datadog_logger("Small project detected (" . $actualPageCount . " processable pages). Using direct processing.");
             return $this->sync_pages_directly($pageNames, $data);
         }
     }
@@ -781,19 +784,38 @@ class CodeDesignForWordPress
         $pageNames = $sync_data['pageNames'];
         $data = $sync_data['data'];
 
+        // Count processable pages for progress tracking
+        $processablePages = array_filter($pageNames, function ($pageName) {
+            return strpos($pageName, 'linked') !== 0 && $pageName !== '404' && $pageName !== 404;
+        });
+        $totalProcessablePages = count($processablePages);
+
+        datadog_logger("Background sync starting: {$totalProcessablePages} pages to process");
+
         // Process pages individually to avoid timeouts
         $processed = 0;
+        $skipped = 0;
         $errors = [];
 
-        foreach ($pageNames as $pageName) {
+        foreach ($pageNames as $index => $pageName) {
+            // Progress logging
+            $currentPosition = $index + 1;
+            $totalPages = count($pageNames);
+
             //ignore linked components
             if (strpos($pageName, 'linked') === 0) {
+                $skipped++;
+                datadog_logger("Background sync progress: [{$currentPosition}/{$totalPages}] Skipped linked component: {$pageName}");
                 continue;
             }
 
             if ($pageName === 404 || $pageName === "404") {
+                $skipped++;
+                datadog_logger("Background sync progress: [{$currentPosition}/{$totalPages}] Skipped 404 page");
                 continue;
             }
+
+            datadog_logger("Background sync progress: [{$currentPosition}/{$totalPages}] Processing page: {$pageName}");
 
             try {
                 // Process each page directly to avoid additional AJAX overhead
@@ -848,10 +870,16 @@ class CodeDesignForWordPress
 
         // Log completion
         $total_pages = count($pageNames);
-        datadog_logger("Background sync completed. Processed: $processed/$total_pages pages. Errors: " . count($errors));
+        $successRate = $totalProcessablePages > 0 ? round(($processed / $totalProcessablePages) * 100, 1) : 100;
+
+        datadog_logger("Background sync completed for sync ID: {$sync_id}");
+        datadog_logger("Final summary: {$processed}/{$totalProcessablePages} pages processed successfully ({$successRate}% success rate)");
+        datadog_logger("Breakdown: {$processed} processed, {$skipped} skipped, " . count($errors) . " errors");
 
         if (!empty($errors)) {
-            datadog_logger("Background sync errors: " . implode(", ", $errors), "warning");
+            datadog_logger("Background sync errors: " . implode(" | ", $errors), "warning");
+        } else {
+            datadog_logger("Background sync completed successfully with no errors!");
         }
     }
 
