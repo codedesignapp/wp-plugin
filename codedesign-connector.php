@@ -34,6 +34,8 @@ class CodeDesignForWordPress
         // add_action('admin_enqueue_scripts', [$this, 'mnc_enqueue_admin_scripts']);
         add_action('wp_ajax_mnc_handle_sync', [$this, 'mnc_handle_sync']);
         add_action('wp_ajax_nopriv_mnc_handle_sync', [$this, 'mnc_handle_sync']);
+        add_action('wp_ajax_mnc_handle_single_page_sync', [$this, 'mnc_handle_single_page_sync']);
+        add_action('wp_ajax_nopriv_mnc_handle_single_page_sync', [$this, 'mnc_handle_single_page_sync']);
         add_filter('the_content', [$this, 'replace_placeholder_with_react_root']);
         add_filter('theme_page_templates', [$this, 'mnc_add_page_template_to_dropdown']);
         add_filter('template_include', [$this, 'mnc_redirect_to_custom_template'], PHP_INT_MAX);
@@ -110,7 +112,8 @@ class CodeDesignForWordPress
             return new WP_REST_Response(['message' => 'API Key is missing.'], 400);
         }
 
-        $syncResult = $this->sync_function($apiKey);
+        // Use the individual page sync method for webhook calls to avoid timeouts
+        $syncResult = $this->sync_function_individual($apiKey);
 
         if ($syncResult) {
             return new WP_REST_Response(['message' => 'Sync completed successfully!'], 200);
@@ -528,6 +531,82 @@ class CodeDesignForWordPress
         wp_send_json(['success' => true]);
     }
 
+    public function mnc_handle_single_page_sync()
+    {
+        $fetchedData = isset($_POST['fetchedData']) ? stripslashes($_POST['fetchedData']) : '{}';
+        $pageName = isset($_POST['pageName']) ? sanitize_text_field($_POST['pageName']) : '';
+
+        if (empty($pageName)) {
+            wp_send_json(['success' => false, 'error' => 'Page name is required']);
+            return;
+        }
+
+        // Ignore linked components
+        if (strpos($pageName, 'linked') === 0) {
+            wp_send_json(['success' => true, 'message' => 'Skipped linked component']);
+            return;
+        }
+
+        // Ignore 404 pages
+        if ($pageName === 404 || $pageName === "404") {
+            wp_send_json(['success' => true, 'message' => 'Skipped 404 page']);
+            return;
+        }
+
+        // Check if a post/page with that pathname exists
+        $existingPage = get_page_by_path($pageName, OBJECT, ['page', 'post']);
+
+        // Placeholder content for the React app
+        $placeholderContent = '[your_placeholder_string]';
+
+        try {
+            if ($existingPage) {
+                // Update the existing post/page
+                $result = wp_update_post([
+                    'ID' => $existingPage->ID,
+                    'post_content' => $placeholderContent
+                ]);
+
+                if (is_wp_error($result)) {
+                    wp_send_json(['success' => false, 'error' => 'Failed to update page: ' . $result->get_error_message()]);
+                    return;
+                }
+
+                // Check if the pageName is "home" and set it as the homepage
+                if ($pageName === 'home') {
+                    update_option('show_on_front', 'page');
+                    update_option('page_on_front', $existingPage->ID);
+                }
+
+                wp_send_json(['success' => true, 'message' => 'Page updated successfully', 'page_id' => $existingPage->ID]);
+            } else {
+                // Create a new post/page
+                $newPageID = wp_insert_post([
+                    'post_title'    => $pageName,
+                    'post_name'     => $pageName,
+                    'post_content'  => $placeholderContent,
+                    'post_status'   => 'publish',
+                    'post_type'     => 'page',
+                    'page_template' => plugin_dir_path(__FILE__) . 'full-width-template.php'
+                ]);
+
+                if (is_wp_error($newPageID)) {
+                    wp_send_json(['success' => false, 'error' => 'Failed to create page: ' . $newPageID->get_error_message()]);
+                    return;
+                }
+
+                if ($pageName === 'home') {
+                    update_option('show_on_front', 'page');
+                    update_option('page_on_front', $newPageID);
+                }
+
+                wp_send_json(['success' => true, 'message' => 'Page created successfully', 'page_id' => $newPageID]);
+            }
+        } catch (Exception $e) {
+            wp_send_json(['success' => false, 'error' => 'Exception: ' . $e->getMessage()]);
+        }
+    }
+
 
     public function replace_placeholder_with_react_root($content)
     {
@@ -586,34 +665,241 @@ class CodeDesignForWordPress
         add_filter('https_ssl_verify', '__return_false');
         add_filter('https_local_ssl_verify', '__return_false');
 
-
         datadog_logger($logMessage);
-        $ajaxUrl = admin_url('admin-ajax.php');
-        $body = array(
-            'action' => 'mnc_handle_sync',
-            'pageNames' => json_encode($pageNames),
-            'fetchedData' => json_encode($data)
-        );
 
-        $syncResponse = wp_remote_post($ajaxUrl, array(
-            'body' => $body,
-            'timeout' => 15
-        ));
+        // Store the project data first
+        update_option('cc_project_data', json_encode($data));
+        update_option('mnc_page_names', $pageNames);
+
+        $ajaxUrl = admin_url('admin-ajax.php');
+        $successCount = 0;
+        $totalPages = count($pageNames);
+
+        // Process each page individually to avoid timeout
+        foreach ($pageNames as $pageName) {
+            //ignore linked components
+            if (strpos($pageName, 'linked') === 0) {
+                continue;
+            }
+
+            $body = array(
+                'action' => 'mnc_handle_single_page_sync',
+                'pageName' => $pageName,
+                'fetchedData' => json_encode($data)
+            );
+
+            $syncResponse = wp_remote_post($ajaxUrl, array(
+                'body' => $body,
+                'timeout' => 30  // Increased timeout for individual page processing
+            ));
+
+            if (!is_wp_error($syncResponse)) {
+                $syncBody = wp_remote_retrieve_body($syncResponse);
+                $syncResult = json_decode($syncBody, true);
+
+                if (isset($syncResult['success']) && $syncResult['success']) {
+                    $successCount++;
+                    datadog_logger("Successfully synced page: " . $pageName);
+                } else {
+                    datadog_logger("Failed to sync page: " . $pageName . " - " . print_r($syncResult, true), "error");
+                }
+            } else {
+                datadog_logger("Error during individual page sync for " . $pageName . ": " . $syncResponse->get_error_message(), "error");
+            }
+        }
 
         // Remove the filter to re-enable SSL verification for subsequent requests
         remove_filter('https_ssl_verify', '__return_false');
         remove_filter('https_local_ssl_verify', '__return_false');
 
-        if (is_wp_error($syncResponse)) {
-            datadog_logger("Error during sync: " . $syncResponse->get_error_message());
+        // Consider it successful if at least 80% of pages were synced
+        $successRate = $totalPages > 0 ? ($successCount / $totalPages) : 1;
+        $isSuccessful = $successRate >= 0.8;
+
+        if (!$isSuccessful) {
+            datadog_logger("Sync partially failed. Success rate: " . ($successRate * 100) . "% ($successCount/$totalPages)", "warning");
+        }
+
+        return $isSuccessful;
+    }
+
+    private function sync_function_individual($apiKey)
+    {
+        $pathname = "/guest/web-builder/project?wordpress=true&bypassCache=true&returnJSON=true&key={$apiKey}";
+        $endpoint = $this->base_hostname . $pathname;
+
+        $response = wp_remote_get($endpoint);
+
+        if (is_wp_error($response)) {
+            datadog_logger("Error fetching page data: " . $response->get_error_message(), "error");
             return false;
         }
 
-        $syncBody = wp_remote_retrieve_body($syncResponse);
-        $syncResult = json_decode($syncBody, true);
+        $body = wp_remote_retrieve_body($response);
+        $parsedResponse = json_decode($body, true);
 
-        error_log(isset($syncResult['success']) && $syncResult['success']);
-        return isset($syncResult['success']) && $syncResult['success'];
+        if (!isset($parsedResponse['data'])) {
+            datadog_logger("JSON decoding failed", "error");
+            return false;
+        } else {
+            datadog_logger("JSON decoding succeeded");
+        }
+
+        $data = $parsedResponse['data'];
+        $pageNames = array_keys($data['blueprint'] ?? array());
+        $logMessage = print_r($pageNames, true);
+
+        // Temporarily disable SSL verification
+        add_filter('https_ssl_verify', '__return_false');
+        add_filter('https_local_ssl_verify', '__return_false');
+
+        datadog_logger($logMessage);
+
+        // Store the project data first
+        update_option('cc_project_data', json_encode($data));
+        update_option('mnc_page_names', $pageNames);
+
+        $ajaxUrl = admin_url('admin-ajax.php');
+        $successCount = 0;
+        $totalPages = count($pageNames);
+
+        // Process each page individually to avoid timeout
+        foreach ($pageNames as $pageName) {
+            //ignore linked components
+            if (strpos($pageName, 'linked') === 0) {
+                continue;
+            }
+
+            $body = array(
+                'action' => 'mnc_handle_single_page_sync',
+                'pageName' => $pageName,
+                'fetchedData' => json_encode($data)
+            );
+
+            $syncResponse = wp_remote_post($ajaxUrl, array(
+                'body' => $body,
+                'timeout' => 30  // Increased timeout for individual page processing
+            ));
+
+            if (!is_wp_error($syncResponse)) {
+                $syncBody = wp_remote_retrieve_body($syncResponse);
+                $syncResult = json_decode($syncBody, true);
+
+                if (isset($syncResult['success']) && $syncResult['success']) {
+                    $successCount++;
+                    datadog_logger("Successfully synced page: " . $pageName);
+                } else {
+                    datadog_logger("Failed to sync page: " . $pageName . " - " . print_r($syncResult, true), "error");
+                }
+            } else {
+                datadog_logger("Error during individual page sync for " . $pageName . ": " . $syncResponse->get_error_message(), "error");
+            }
+        }
+
+        // Remove the filter to re-enable SSL verification for subsequent requests
+        remove_filter('https_ssl_verify', '__return_false');
+        remove_filter('https_local_ssl_verify', '__return_false');
+
+        // Consider it successful if at least 80% of pages were synced
+        $successRate = $totalPages > 0 ? ($successCount / $totalPages) : 1;
+        $isSuccessful = $successRate >= 0.8;
+
+        if (!$isSuccessful) {
+            datadog_logger("Sync partially failed. Success rate: " . ($successRate * 100) . "% ($successCount/$totalPages)", "warning");
+        }
+
+        return $isSuccessful;
+    }
+
+    public function mnc_handle_sync_optimized()
+    {
+        // Increase time limit for bulk processing
+        if (function_exists('set_time_limit')) {
+            set_time_limit(120); // 2 minutes
+        }
+
+        // Increase memory limit if possible
+        if (function_exists('ini_set')) {
+            ini_set('memory_limit', '256M');
+        }
+
+        $fetchedData = isset($_POST['fetchedData']) ? stripslashes($_POST['fetchedData']) : '{test:"new"}';
+        update_option('cc_project_data', $fetchedData);
+        $pageNames = isset($_POST['pageNames']) ? json_decode(stripslashes($_POST['pageNames']), true) : [];
+        update_option('mnc_page_names', $pageNames);
+
+        $processedCount = 0;
+        $errors = [];
+
+        foreach ($pageNames as $pageName) {
+            // Send a heartbeat every 10 pages to prevent timeout
+            if ($processedCount % 10 === 0) {
+                // This prevents browser/server timeouts by sending data
+                echo " "; // Send a space character
+                if (ob_get_level()) {
+                    ob_flush();
+                }
+                flush();
+            }
+
+            //ignore linked components
+            if (strpos($pageName, 'linked') === 0) {
+                continue;
+            }
+
+            if ($pageName === 404 || $pageName === "404") {
+                continue;
+            }
+
+            try {
+                // Check if a post/page with that pathname exists
+                $existingPage = get_page_by_path($pageName, OBJECT, ['page', 'post']);
+                $placeholderContent = '[your_placeholder_string]';
+
+                if ($existingPage) {
+                    wp_update_post([
+                        'ID' => $existingPage->ID,
+                        'post_content' => $placeholderContent
+                    ]);
+
+                    if ($pageName === 'home') {
+                        update_option('show_on_front', 'page');
+                        update_option('page_on_front', $existingPage->ID);
+                    }
+                } else {
+                    $newPageID = wp_insert_post([
+                        'post_title'    => $pageName,
+                        'post_name'     => $pageName,
+                        'post_content'  => $placeholderContent,
+                        'post_status'   => 'publish',
+                        'post_type'     => 'page',
+                        'page_template' => plugin_dir_path(__FILE__) . 'full-width-template.php'
+                    ]);
+
+                    if (is_wp_error($newPageID)) {
+                        $errors[] = "Failed to create page '$pageName': " . $newPageID->get_error_message();
+                        continue;
+                    }
+
+                    if ($pageName === 'home') {
+                        update_option('show_on_front', 'page');
+                        update_option('page_on_front', $newPageID);
+                    }
+                }
+
+                $processedCount++;
+            } catch (Exception $e) {
+                $errors[] = "Error processing page '$pageName': " . $e->getMessage();
+            }
+        }
+
+        $response = ['success' => true, 'processed' => $processedCount];
+        if (!empty($errors)) {
+            $response['errors'] = $errors;
+            $response['partial_success'] = true;
+        }
+
+        wp_send_json($response);
     }
 
     private function remove_plugin_artifacts()
