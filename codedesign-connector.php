@@ -665,62 +665,34 @@ class CodeDesignForWordPress
         add_filter('https_ssl_verify', '__return_false');
         add_filter('https_local_ssl_verify', '__return_false');
 
+
         datadog_logger($logMessage);
-
-        // Store the project data first
-        update_option('cc_project_data', json_encode($data));
-        update_option('mnc_page_names', $pageNames);
-
         $ajaxUrl = admin_url('admin-ajax.php');
-        $successCount = 0;
-        $totalPages = count($pageNames);
+        $body = array(
+            'action' => 'mnc_handle_sync',
+            'pageNames' => json_encode($pageNames),
+            'fetchedData' => json_encode($data)
+        );
 
-        // Process each page individually to avoid timeout
-        foreach ($pageNames as $pageName) {
-            //ignore linked components
-            if (strpos($pageName, 'linked') === 0) {
-                continue;
-            }
-
-            $body = array(
-                'action' => 'mnc_handle_single_page_sync',
-                'pageName' => $pageName,
-                'fetchedData' => json_encode($data)
-            );
-
-            $syncResponse = wp_remote_post($ajaxUrl, array(
-                'body' => $body,
-                'timeout' => 30  // Increased timeout for individual page processing
-            ));
-
-            if (!is_wp_error($syncResponse)) {
-                $syncBody = wp_remote_retrieve_body($syncResponse);
-                $syncResult = json_decode($syncBody, true);
-
-                if (isset($syncResult['success']) && $syncResult['success']) {
-                    $successCount++;
-                    datadog_logger("Successfully synced page: " . $pageName);
-                } else {
-                    datadog_logger("Failed to sync page: " . $pageName . " - " . print_r($syncResult, true), "error");
-                }
-            } else {
-                datadog_logger("Error during individual page sync for " . $pageName . ": " . $syncResponse->get_error_message(), "error");
-            }
-        }
+        $syncResponse = wp_remote_post($ajaxUrl, array(
+            'body' => $body,
+            'timeout' => 15
+        ));
 
         // Remove the filter to re-enable SSL verification for subsequent requests
         remove_filter('https_ssl_verify', '__return_false');
         remove_filter('https_local_ssl_verify', '__return_false');
 
-        // Consider it successful if at least 80% of pages were synced
-        $successRate = $totalPages > 0 ? ($successCount / $totalPages) : 1;
-        $isSuccessful = $successRate >= 0.8;
-
-        if (!$isSuccessful) {
-            datadog_logger("Sync partially failed. Success rate: " . ($successRate * 100) . "% ($successCount/$totalPages)", "warning");
+        if (is_wp_error($syncResponse)) {
+            datadog_logger("Error during sync: " . $syncResponse->get_error_message());
+            return false;
         }
 
-        return $isSuccessful;
+        $syncBody = wp_remote_retrieve_body($syncResponse);
+        $syncResult = json_decode($syncBody, true);
+
+        error_log(isset($syncResult['success']) && $syncResult['success']);
+        return isset($syncResult['success']) && $syncResult['success'];
     }
 
     private function sync_function_individual($apiKey)

@@ -26,10 +26,17 @@ function App() {
 
   // Inside your component
   function handleAPIKeyDisconnect() {
+    console.log("Disconnect button clicked!"); // Debug log
     setShowSettingsLoader(true);
 
     console.log("testtt");
-    const ajaxURL = window.wpData && window.wpData.ajax_url;
+    // Use relative path in development (for proxy), full URL in production
+    const ajaxURL =
+      process.env.NODE_ENV === "development"
+        ? "/wp-admin/admin-ajax.php"
+        : window.wpData && window.wpData.ajax_url;
+    console.log("AJAX URL:", ajaxURL); // Debug log
+
     fetch(ajaxURL, {
       method: "POST",
       headers: {
@@ -39,8 +46,12 @@ function App() {
         action: "disconnect_api_key",
       }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        console.log("Disconnect response:", response); // Debug log
+        return response.json();
+      })
       .then((data) => {
+        console.log("Disconnect data:", data); // Debug log
         if (data.success) {
           console.log("Disconnected successfully");
           setHasApiKey(false);
@@ -59,7 +70,11 @@ function App() {
   }
 
   const handleAPIKeySubmit = async (e) => {
-    const ajaxURL = window.wpData && window.wpData.ajax_url;
+    // Use relative path in development (for proxy), full URL in production
+    const ajaxURL =
+      process.env.NODE_ENV === "development"
+        ? "/wp-admin/admin-ajax.php"
+        : window.wpData && window.wpData.ajax_url;
     console.log("tess2");
     setShowSettingsLoader(true);
     return fetch(ajaxURL, {

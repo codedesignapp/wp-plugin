@@ -5,13 +5,58 @@ import "./style.scss";
 
 const SyncPage = (props) => {
   const rawData = window.wpData && window.wpData;
-  const jsonData = JSON.parse(rawData?.projectData);
 
-  const pagesCount = Object.keys(jsonData.blueprint).filter(
-    (item) => !item?.startsWith("linked"),
-  )?.length;
-  const lastPublished = formatPrettyDate(jsonData.timestamps?.updatedAt);
+  // Safe JSON parsing with fallbacks for corrupt data
+  let jsonData = null;
+  let pagesCount = 0;
+  let lastPublished = "N/A";
+
+  try {
+    if (rawData && rawData.projectData) {
+      jsonData = JSON.parse(rawData.projectData);
+
+      // Safely get pages count
+      if (
+        jsonData &&
+        jsonData.blueprint &&
+        typeof jsonData.blueprint === "object"
+      ) {
+        pagesCount =
+          Object.keys(jsonData.blueprint).filter(
+            (item) => !item?.startsWith("linked"),
+          )?.length || 0;
+      }
+
+      // Safely get last published date
+      if (jsonData && jsonData.timestamps && jsonData.timestamps.updatedAt) {
+        lastPublished = formatPrettyDate(jsonData.timestamps.updatedAt);
+      }
+    }
+  } catch (error) {
+    console.error("Error parsing project data:", error);
+    console.log("Raw project data:", rawData?.projectData);
+    // Use fallback values - component will still render
+    jsonData = { blueprint: {}, timestamps: {} };
+    pagesCount = 0;
+    lastPublished = "Data unavailable";
+  }
+
   const { handleDisconnect, showLoader } = props;
+
+  // Debug log to check if handleDisconnect is properly passed
+  console.log("SyncPage handleDisconnect:", handleDisconnect);
+  console.log("SyncPage showLoader:", showLoader);
+
+  // Wrapper function to debug clicks
+  const handleDisconnectClick = () => {
+    console.log("Disconnect span clicked!");
+    if (handleDisconnect) {
+      handleDisconnect();
+    } else {
+      console.error("handleDisconnect function not available!");
+    }
+  };
+
   // State to manage the API Key input field
 
   function formatPrettyDate(dateString) {
@@ -60,6 +105,18 @@ const SyncPage = (props) => {
         </div>
         <div className="cd-sync-footer-additional-info">{pagesCount} Pages</div>
         <div className="cd-sync-footer-info-text">
+          {lastPublished === "Data unavailable" ? (
+            <span
+              style={{
+                color: "#e74c3c",
+                marginBottom: "8px",
+                display: "block",
+              }}
+            >
+              ⚠️ Project data appears to be corrupted. Try disconnecting and
+              reconnecting your API key, or republish from CodeDesign.
+            </span>
+          ) : null}
           <span>
             To publish a newer version, head over to the project and press the
             Publish button. Please contact{" "}
@@ -68,7 +125,7 @@ const SyncPage = (props) => {
           </span>
           <span
             className="cd-sync-footer-disconnect"
-            onClick={handleDisconnect}
+            onClick={handleDisconnectClick}
           >
             {" "}
             {showLoader ? "Disconnecting..." : "Disconnect now"}
