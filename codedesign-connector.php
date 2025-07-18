@@ -53,6 +53,8 @@ class CodeDesignForWordPress
 
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_styles']);
 
+        // Register background sync processing
+        add_action('codedesign_process_background_sync', [$this, 'process_background_sync']);
 
         $this->base_hostname = ConfigManager::get('base_hostname');
     }
@@ -348,10 +350,23 @@ class CodeDesignForWordPress
         if (isset($data['valid']) && $data['valid']) {
             // If the API key is valid, attempt to sync
             if ($this->sync_function($apiKey)) {
-                return [
-                    'valid' => true,
-                    'message' => 'API key validated and pages synced successfully!'
-                ];
+                // Check if this was a background sync by looking at stored page count
+                $storedPageNames = get_option('mnc_page_names', []);
+                $filteredPageNames = array_filter($storedPageNames, function ($pageName) {
+                    return strpos($pageName, 'linked') !== 0 && $pageName !== '404' && $pageName !== 404;
+                });
+
+                if (count($filteredPageNames) >= 7) {
+                    return [
+                        'valid' => true,
+                        'message' => 'API key validated successfully! Your pages are being synced in the background and will appear shortly.'
+                    ];
+                } else {
+                    return [
+                        'valid' => true,
+                        'message' => 'API key validated and pages synced successfully!'
+                    ];
+                }
             } else {
                 datadog_logger("Failed to sync after successful API key validation.");
                 return [
@@ -675,14 +690,39 @@ class CodeDesignForWordPress
         $pageNames = array_keys($data['blueprint'] ?? array());
         $logMessage = print_r($pageNames, true);
 
-        // Log the array to the error log
-
         // Temporarily disable SSL verification
         add_filter('https_ssl_verify', '__return_false');
         add_filter('https_local_ssl_verify', '__return_false');
 
-
         datadog_logger($logMessage);
+
+        // Store the project data first
+        update_option('cc_project_data', json_encode($data));
+        update_option('mnc_page_names', $pageNames);
+
+        // Check if this is a large project (7+ pages) that might timeout on shared hosting
+        $filteredPageNames = array_filter($pageNames, function ($pageName) {
+            return strpos($pageName, 'linked') !== 0 && $pageName !== '404' && $pageName !== 404;
+        });
+
+        if (count($filteredPageNames) >= 7) {
+            // Use background processing for large projects
+            datadog_logger("Large project detected (" . count($filteredPageNames) . " pages). Using background processing.");
+            $this->schedule_background_sync($pageNames, $data);
+
+            // Remove SSL filters
+            remove_filter('https_ssl_verify', '__return_false');
+            remove_filter('https_local_ssl_verify', '__return_false');
+
+            return true; // Return success immediately
+        } else {
+            // Use direct processing for small projects
+            return $this->sync_pages_directly($pageNames, $data);
+        }
+    }
+
+    private function sync_pages_directly($pageNames, $data)
+    {
         $ajaxUrl = admin_url('admin-ajax.php');
         $body = array(
             'action' => 'mnc_handle_sync',
@@ -709,6 +749,110 @@ class CodeDesignForWordPress
 
         error_log(isset($syncResult['success']) && $syncResult['success']);
         return isset($syncResult['success']) && $syncResult['success'];
+    }
+
+    private function schedule_background_sync($pageNames, $data)
+    {
+        // Store sync data temporarily
+        $sync_id = uniqid('codedesign_sync_');
+        update_option("codedesign_sync_data_{$sync_id}", [
+            'pageNames' => $pageNames,
+            'data' => $data,
+            'created' => time()
+        ]);
+
+        // Schedule background processing
+        wp_schedule_single_event(time() + 10, 'codedesign_process_background_sync', [$sync_id]);
+
+        datadog_logger("Background sync scheduled with ID: " . $sync_id);
+    }
+
+    public function process_background_sync($sync_id)
+    {
+        datadog_logger("Processing background sync: " . $sync_id);
+
+        // Retrieve sync data
+        $sync_data = get_option("codedesign_sync_data_{$sync_id}");
+        if (!$sync_data) {
+            datadog_logger("Background sync data not found for ID: " . $sync_id, "error");
+            return;
+        }
+
+        $pageNames = $sync_data['pageNames'];
+        $data = $sync_data['data'];
+
+        // Process pages individually to avoid timeouts
+        $processed = 0;
+        $errors = [];
+
+        foreach ($pageNames as $pageName) {
+            //ignore linked components
+            if (strpos($pageName, 'linked') === 0) {
+                continue;
+            }
+
+            if ($pageName === 404 || $pageName === "404") {
+                continue;
+            }
+
+            try {
+                // Process each page directly to avoid additional AJAX overhead
+                $existingPage = get_page_by_path($pageName, OBJECT, ['page', 'post']);
+                $placeholderContent = '[your_placeholder_string]';
+
+                if ($existingPage) {
+                    wp_update_post([
+                        'ID' => $existingPage->ID,
+                        'post_content' => $placeholderContent
+                    ]);
+
+                    if ($pageName === 'home') {
+                        update_option('show_on_front', 'page');
+                        update_option('page_on_front', $existingPage->ID);
+                    }
+                } else {
+                    $newPageID = wp_insert_post([
+                        'post_title'    => $pageName,
+                        'post_name'     => $pageName,
+                        'post_content'  => $placeholderContent,
+                        'post_status'   => 'publish',
+                        'post_type'     => 'page',
+                        'page_template' => plugin_dir_path(__FILE__) . 'full-width-template.php'
+                    ]);
+
+                    if (is_wp_error($newPageID)) {
+                        $errors[] = "Failed to create page '$pageName': " . $newPageID->get_error_message();
+                        continue;
+                    }
+
+                    if ($pageName === 'home') {
+                        update_option('show_on_front', 'page');
+                        update_option('page_on_front', $newPageID);
+                    }
+                }
+
+                $processed++;
+                datadog_logger("Background sync: Successfully processed page '$pageName'");
+
+                // Small delay to prevent overwhelming shared hosting
+                usleep(100000); // 0.1 second delay
+
+            } catch (Exception $e) {
+                $errors[] = "Error processing page '$pageName': " . $e->getMessage();
+                datadog_logger("Background sync error for page '$pageName': " . $e->getMessage(), "error");
+            }
+        }
+
+        // Clean up sync data
+        delete_option("codedesign_sync_data_{$sync_id}");
+
+        // Log completion
+        $total_pages = count($pageNames);
+        datadog_logger("Background sync completed. Processed: $processed/$total_pages pages. Errors: " . count($errors));
+
+        if (!empty($errors)) {
+            datadog_logger("Background sync errors: " . implode(", ", $errors), "warning");
+        }
     }
 
     private function sync_function_individual($apiKey)
