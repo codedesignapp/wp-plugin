@@ -1,5 +1,5 @@
 <?php
 return [
-    'base_hostname' => 'https://development-api.codedesign.app',
+    'base_hostname' => 'https://beta-api.codedesign.app',
     // other settings...
 ];

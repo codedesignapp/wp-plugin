@@ -5,14 +5,14 @@ import "./style.scss";
 
 const ApiKeyPage = (props) => {
   const { handleSubmit, showLoader, apiKey, setApiKey } = props;
-  // State to manage the error message
-  const [errorMessage, setErrorMessage] = useState("");
+  // State to manage the error details
+  const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
     setApiKey(e.target.value);
 
     // Clear the error message when the user starts typing again
-    setErrorMessage("");
+    setError(null);
   };
 
   const handleFormSubmit = async (e) => {
@@ -22,8 +22,15 @@ const ApiKeyPage = (props) => {
     console.log("tessst", result);
 
     if (!result.valid) {
-      // Assuming result contains a message for the error
-      setErrorMessage(result.message || "Invalid API Key");
+      // Set detailed error information
+      setError({
+        message: result.message || "Invalid API Key",
+        suggestion: result.suggestion || "",
+        error_type: result.error_type || "unknown_error",
+        raw_error: result.raw_error || "",
+      });
+    } else {
+      setError(null);
     }
   };
   return (
@@ -63,7 +70,14 @@ const ApiKeyPage = (props) => {
                 : "Authenticating your API. Please wait..."}
             </button>
           </div>
-          <div className="cd-error-message">{errorMessage}</div>
+          {error && (
+            <div className="cd-error-container">
+              <div className="cd-error-message">{error.message}</div>
+              {error.suggestion && (
+                <div className="cd-error-suggestion">{error.suggestion}</div>
+              )}
+            </div>
+          )}
           <div className="info-text">
             To get the API key, head over to your{" "}
             <strong>project's settings</strong>, and then{" "}

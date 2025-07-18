@@ -74,22 +74,36 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("tess3");
+        console.log("tess3", data);
         setShowSettingsLoader(false);
 
         if (data.valid) {
           setHasApiKey(true);
           console.log("API Key is valid");
-          return { valid: true };
+          return {
+            valid: true,
+            message: data.message || "API key validated successfully!",
+          };
         } else {
-          console.log("API Key is invalid");
-          return { valid: false, message: "Invalid API Key" };
+          console.log("API Key validation failed:", data);
+          return {
+            valid: false,
+            message: data.error_message || "Invalid API Key",
+            suggestion: data.suggestion || "",
+            error_type: data.error_type || "unknown_error",
+            raw_error: data.raw_error || "",
+          };
         }
       })
       .catch((error) => {
         console.log("Error during the validation:", error);
         setShowSettingsLoader(false);
-        return { valid: false, message: "Invalid API Key" };
+        return {
+          valid: false,
+          message: "Network Error - Unable to connect to server",
+          suggestion: "Please check your internet connection and try again.",
+          error_type: "network_error",
+        };
       });
   };
   return (
