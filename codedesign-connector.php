@@ -465,6 +465,15 @@ class CodeDesignForWordPress
 
     public function mnc_handle_sync()
     {
+        // Increase execution time for large projects
+        if (function_exists('set_time_limit')) {
+            set_time_limit(300); // 5 minutes
+        }
+
+        // Increase memory limit if possible
+        if (function_exists('ini_set')) {
+            ini_set('memory_limit', '512M');
+        }
 
         $fetchedData = isset($_POST['fetchedData']) ? stripslashes($_POST['fetchedData']) : '{test:"new"}';
         update_option('cc_project_data', $fetchedData);
@@ -478,7 +487,12 @@ class CodeDesignForWordPress
                 continue;
             }
 
-
+            // Send heartbeat to prevent browser timeout
+            echo " "; // Send a space character
+            if (ob_get_level()) {
+                ob_flush();
+            }
+            flush();
 
             // Check if a post/page with that pathname exists
             $existingPage = get_page_by_path($pageName, OBJECT, ['page', 'post']);
@@ -637,7 +651,9 @@ class CodeDesignForWordPress
         $pathname = "/guest/web-builder/project?wordpress=true&bypassCache=true&returnJSON=true&key={$apiKey}";
         $endpoint = $this->base_hostname . $pathname;
 
-        $response = wp_remote_get($endpoint);
+        $response = wp_remote_get($endpoint, [
+            'timeout' => 30  // Increased timeout for CodeDesign API calls
+        ]);
 
         if (is_wp_error($response)) {
             datadog_logger("Error fetching page data: " . $response->get_error_message(), "error");
@@ -676,7 +692,7 @@ class CodeDesignForWordPress
 
         $syncResponse = wp_remote_post($ajaxUrl, array(
             'body' => $body,
-            'timeout' => 15
+            'timeout' => 60  // Increased from 15 to 60 seconds for larger projects
         ));
 
         // Remove the filter to re-enable SSL verification for subsequent requests
@@ -700,7 +716,9 @@ class CodeDesignForWordPress
         $pathname = "/guest/web-builder/project?wordpress=true&bypassCache=true&returnJSON=true&key={$apiKey}";
         $endpoint = $this->base_hostname . $pathname;
 
-        $response = wp_remote_get($endpoint);
+        $response = wp_remote_get($endpoint, [
+            'timeout' => 30  // Increased timeout for CodeDesign API calls
+        ]);
 
         if (is_wp_error($response)) {
             datadog_logger("Error fetching page data: " . $response->get_error_message(), "error");
