@@ -1,8 +1,8 @@
 {
   "name": "CodeDesign.ai Pages",
-  "version": "1.3.64",
-  "download_url": "https://github.com/codedesignapp/wp-plugin/releases/download/1.3.64/codedesign-wp-plugin-updater-latest.zip",
-  "install_url": "https://github.com/codedesignapp/wp-plugin/releases/download/1.3.64/codedesign-wp-plugin-installer-latest.zip",
+  "version": "1.3.65",
+  "download_url": "https://github.com/codedesignapp/wp-plugin/releases/download/1.3.65/codedesign-wp-plugin-updater-latest.zip",
+  "install_url": "https://github.com/codedesignapp/wp-plugin/releases/download/1.3.65/codedesign-wp-plugin-installer-latest.zip",
   "sections": {
     "description": "<div><h2>CodeDesign.ai Pages</h2><p>Transform your WordPress experience with the <strong>CodeDesign.ai Pages plugin</strong>, a cutting-edge tool that integrates the advanced AI capabilities of CodeDesign.ai into your WordPress site. This plugin revolutionizes the process of web design and development for designers, developers, and content managers.</p><h3>Key Features:</h3><ul><li><strong>Instant Publishing:</strong> Seamlessly transfer your beautifully crafted pages from CodeDesign.ai to WordPress with just one click, ensuring design consistency and integrity.</li><li><strong>Effortless Updates:</strong> Synchronize changes made on CodeDesign.ai with your WordPress site effortlessly, keeping your content up-to-date without manual intervention.</li><li><strong>Design Freedom:</strong> Utilize the AI-driven design tools of CodeDesign.ai to create responsive, eye-catching pages that are fully compatible with WordPress.</li><li><strong>Simplified Workflow:</strong> This plugin bridges the gap between CodeDesign.ai and WordPress, streamlining your web design process and enabling you to focus more on creativity and content.</li><li><strong>Enhanced SEO:</strong> Benefit from SEO-optimized pages created through CodeDesign.ai, improving your WordPress site's search engine ranking and visibility.</li></ul><p>The <strong>CodeDesign.ai Pages</strong> plugin is your gateway to a new era of web design where AI-driven efficiency and creative freedom converge. It's the perfect tool for building a dynamic, visually stunning, and user-friendly website that stays ahead in the digital world.</p></div>"
   }
