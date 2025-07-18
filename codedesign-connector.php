@@ -2,7 +2,7 @@
 /*
 Plugin Name: CodeDesign.ai Pages 
 Description: Brings the power of CodeDesign.ai 
-Version: 1.3.65
+Version: 1.3.66
 Author: CodeDesign.ai
 */
 require_once plugin_dir_path(__FILE__) . 'settings-page.php';
